@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "title": "SAIIL Wildlife Habitat Explorer",
+  "description": "Synthetic demo only. Replace datasets with your own verified EO products.",
+  "species": [
+    {
+      "id": "roe_deer",
+      "label": "Roe deer"
+    },
+    {
+      "id": "wild_boar",
+      "label": "Wild boar"
+    }
+  ],
+  "datasets": [
+    {
+      "id": "roe_deer-2026-09-27",
+      "species": "roe_deer",
+      "date": "2026-09-27",
+      "region": "Black Forest (DE)",
+      "extent": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "description": "Illustrative data only. Nothing on this map indicates real animal presence, sightings or scientifically derived habitat suitability.",
+      "geojson": "./snapshots/roe_deer-2026-09-27.geojson",
+      "raster": {
+        "type": "image",
+        "url": "./snapshots/roe_deer-2026-09-27.png",
+        "bounds": [
+          7.55,
+          47.67,
+          8.85,
+          48.56
+        ],
+        "units": "illustrative index 0\u2013100"
+      }
+    },
+    {
+      "id": "roe_deer-2026-10-04",
+      "species": "roe_deer",
+      "date": "2026-10-04",
+      "region": "Black Forest (DE)",
+      "extent": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "description": "Illustrative data only. Nothing on this map indicates real animal presence, sightings or scientifically derived habitat suitability.",
+      "geojson": "./snapshots/roe_deer-2026-10-04.geojson",
+      "raster": {
+        "type": "image",
+        "url": "./snapshots/roe_deer-2026-10-04.png",
+        "bounds": [
+          7.55,
+          47.67,
+          8.85,
+          48.56
+        ],
+        "units": "illustrative index 0\u2013100"
+      }
+    },
+    {
+      "id": "roe_deer-2026-10-11",
+      "species": "roe_deer",
+      "date": "2026-10-11",
+      "region": "Black Forest (DE)",
+      "extent": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "description": "Illustrative data only. Nothing on this map indicates real animal presence, sightings or scientifically derived habitat suitability.",
+      "geojson": "./snapshots/roe_deer-2026-10-11.geojson",
+      "raster": {
+        "type": "image",
+        "url": "./snapshots/roe_deer-2026-10-11.png",
+        "bounds": [
+          7.55,
+          47.67,
+          8.85,
+          48.56
+        ],
+        "units": "illustrative index 0\u2013100"
+      }
+    },
+    {
+      "id": "wild_boar-2026-09-27",
+      "species": "wild_boar",
+      "date": "2026-09-27",
+      "region": "Black Forest (DE)",
+      "extent": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "description": "Illustrative data only. Nothing on this map indicates real animal presence, sightings or scientifically derived habitat suitability.",
+      "geojson": "./snapshots/wild_boar-2026-09-27.geojson",
+      "raster": {
+        "type": "image",
+        "url": "./snapshots/wild_boar-2026-09-27.png",
+        "bounds": [
+          7.55,
+          47.67,
+          8.85,
+          48.56
+        ],
+        "units": "illustrative index 0\u2013100"
+      }
+    },
+    {
+      "id": "wild_boar-2026-10-04",
+      "species": "wild_boar",
+      "date": "2026-10-04",
+      "region": "Black Forest (DE)",
+      "extent": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "description": "Illustrative data only. Nothing on this map indicates real animal presence, sightings or scientifically derived habitat suitability.",
+      "geojson": "./snapshots/wild_boar-2026-10-04.geojson",
+      "raster": {
+        "type": "image",
+        "url": "./snapshots/wild_boar-2026-10-04.png",
+        "bounds": [
+          7.55,
+          47.67,
+          8.85,
+          48.56
+        ],
+        "units": "illustrative index 0\u2013100"
+      }
+    },
+    {
+      "id": "wild_boar-2026-10-11",
+      "species": "wild_boar",
+      "date": "2026-10-11",
+      "region": "Black Forest (DE)",
+      "extent": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "description": "Illustrative data only. Nothing on this map indicates real animal presence, sightings or scientifically derived habitat suitability.",
+      "geojson": "./snapshots/wild_boar-2026-10-11.geojson",
+      "raster": {
+        "type": "image",
+        "url": "./snapshots/wild_boar-2026-10-11.png",
+        "bounds": [
+          7.55,
+          47.67,
+          8.85,
+          48.56
+        ],
+        "units": "illustrative index 0\u2013100"
+      }
+    }
+  ]
+}

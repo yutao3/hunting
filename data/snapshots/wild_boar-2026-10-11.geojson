@@ -1,0 +1,1413 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-00",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.732202,
+              47.816589
+            ],
+            [
+              7.726848,
+              47.841637
+            ],
+            [
+              7.697888,
+              47.84625
+            ],
+            [
+              7.673508,
+              47.843431
+            ],
+            [
+              7.653093,
+              47.828547
+            ],
+            [
+              7.650773,
+              47.803913
+            ],
+            [
+              7.671597,
+              47.786933
+            ],
+            [
+              7.697604,
+              47.788297
+            ],
+            [
+              7.726044,
+              47.792114
+            ],
+            [
+              7.732202,
+              47.816589
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-00",
+        "kind": "habitat",
+        "name": "Sample habitat area 01",
+        "score": 78,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-01",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.924766,
+              47.813348
+            ],
+            [
+              7.902084,
+              47.828791
+            ],
+            [
+              7.882376,
+              47.844608
+            ],
+            [
+              7.856045,
+              47.833635
+            ],
+            [
+              7.838398,
+              47.821813
+            ],
+            [
+              7.839006,
+              47.805028
+            ],
+            [
+              7.853383,
+              47.790045
+            ],
+            [
+              7.882008,
+              47.783453
+            ],
+            [
+              7.905606,
+              47.795972
+            ],
+            [
+              7.924766,
+              47.813348
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-01",
+        "kind": "habitat",
+        "name": "Sample habitat area 02",
+        "score": 46,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-02",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.180094,
+              47.77462
+            ],
+            [
+              8.168549,
+              47.789714
+            ],
+            [
+              8.147739,
+              47.798898
+            ],
+            [
+              8.120104,
+              47.798735
+            ],
+            [
+              8.10493,
+              47.783326
+            ],
+            [
+              8.104738,
+              47.765869
+            ],
+            [
+              8.117184,
+              47.747175
+            ],
+            [
+              8.148557,
+              47.74729
+            ],
+            [
+              8.170334,
+              47.75854
+            ],
+            [
+              8.180094,
+              47.77462
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-02",
+        "kind": "habitat",
+        "name": "Sample habitat area 03",
+        "score": 43,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-03",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.388424,
+              47.812782
+            ],
+            [
+              8.374365,
+              47.834757
+            ],
+            [
+              8.345869,
+              47.8414
+            ],
+            [
+              8.318215,
+              47.83958
+            ],
+            [
+              8.295159,
+              47.82464
+            ],
+            [
+              8.290605,
+              47.799695
+            ],
+            [
+              8.313394,
+              47.779789
+            ],
+            [
+              8.346357,
+              47.782111
+            ],
+            [
+              8.380245,
+              47.787147
+            ],
+            [
+              8.388424,
+              47.812782
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-03",
+        "kind": "habitat",
+        "name": "Sample habitat area 04",
+        "score": 66,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-04",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.661677,
+              47.817434
+            ],
+            [
+              8.656752,
+              47.842736
+            ],
+            [
+              8.626542,
+              47.850253
+            ],
+            [
+              8.593901,
+              47.853013
+            ],
+            [
+              8.569402,
+              47.832103
+            ],
+            [
+              8.569773,
+              47.802873
+            ],
+            [
+              8.596931,
+              47.786087
+            ],
+            [
+              8.628419,
+              47.776029
+            ],
+            [
+              8.659901,
+              47.789999
+            ],
+            [
+              8.661677,
+              47.817434
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-04",
+        "kind": "habitat",
+        "name": "Sample habitat area 05",
+        "score": 67,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-05",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.655453,
+              48.00085
+            ],
+            [
+              7.647999,
+              48.019636
+            ],
+            [
+              7.626466,
+              48.02751
+            ],
+            [
+              7.602902,
+              48.026234
+            ],
+            [
+              7.583052,
+              48.012119
+            ],
+            [
+              7.580735,
+              47.988889
+            ],
+            [
+              7.603602,
+              47.976462
+            ],
+            [
+              7.626607,
+              47.973533
+            ],
+            [
+              7.64687,
+              47.982842
+            ],
+            [
+              7.655453,
+              48.00085
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-05",
+        "kind": "habitat",
+        "name": "Sample habitat area 06",
+        "score": 41,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-06",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.946235,
+              48.007523
+            ],
+            [
+              7.941114,
+              48.026052
+            ],
+            [
+              7.920476,
+              48.040853
+            ],
+            [
+              7.893592,
+              48.033907
+            ],
+            [
+              7.884513,
+              48.015662
+            ],
+            [
+              7.87969,
+              47.998006
+            ],
+            [
+              7.8976,
+              47.98659
+            ],
+            [
+              7.919735,
+              47.977491
+            ],
+            [
+              7.942259,
+              47.988239
+            ],
+            [
+              7.946235,
+              48.007523
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-06",
+        "kind": "habitat",
+        "name": "Sample habitat area 07",
+        "score": 55,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-07",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.151971,
+              48.012268
+            ],
+            [
+              8.15443,
+              48.034574
+            ],
+            [
+              8.125523,
+              48.040524
+            ],
+            [
+              8.098704,
+              48.038349
+            ],
+            [
+              8.086391,
+              48.021097
+            ],
+            [
+              8.0756,
+              48.000504
+            ],
+            [
+              8.098226,
+              47.985568
+            ],
+            [
+              8.126012,
+              47.981939
+            ],
+            [
+              8.146418,
+              47.994986
+            ],
+            [
+              8.151971,
+              48.012268
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-07",
+        "kind": "habitat",
+        "name": "Sample habitat area 08",
+        "score": 72,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-08",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.372203,
+              47.973
+            ],
+            [
+              8.371928,
+              47.995377
+            ],
+            [
+              8.342107,
+              48.003019
+            ],
+            [
+              8.313552,
+              47.999282
+            ],
+            [
+              8.298949,
+              47.982333
+            ],
+            [
+              8.287187,
+              47.960599
+            ],
+            [
+              8.31254,
+              47.945462
+            ],
+            [
+              8.34166,
+              47.944797
+            ],
+            [
+              8.370921,
+              47.951229
+            ],
+            [
+              8.372203,
+              47.973
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-08",
+        "kind": "habitat",
+        "name": "Sample habitat area 09",
+        "score": 38,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-09",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.643194,
+              47.995998
+            ],
+            [
+              8.629975,
+              48.010785
+            ],
+            [
+              8.6069,
+              48.020815
+            ],
+            [
+              8.577267,
+              48.01788
+            ],
+            [
+              8.561402,
+              48.003911
+            ],
+            [
+              8.564868,
+              47.988809
+            ],
+            [
+              8.582904,
+              47.97972
+            ],
+            [
+              8.607074,
+              47.970613
+            ],
+            [
+              8.626196,
+              47.983032
+            ],
+            [
+              8.643194,
+              47.995998
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-09",
+        "kind": "habitat",
+        "name": "Sample habitat area 10",
+        "score": 50,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-10",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.700849,
+              48.17741
+            ],
+            [
+              7.691952,
+              48.195989
+            ],
+            [
+              7.671034,
+              48.21382
+            ],
+            [
+              7.642419,
+              48.203537
+            ],
+            [
+              7.626573,
+              48.187235
+            ],
+            [
+              7.621076,
+              48.166082
+            ],
+            [
+              7.643624,
+              48.152852
+            ],
+            [
+              7.669052,
+              48.149449
+            ],
+            [
+              7.694664,
+              48.157122
+            ],
+            [
+              7.700849,
+              48.17741
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-10",
+        "kind": "habitat",
+        "name": "Sample habitat area 11",
+        "score": 75,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-11",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.919991,
+              48.221978
+            ],
+            [
+              7.914074,
+              48.240924
+            ],
+            [
+              7.880977,
+              48.242648
+            ],
+            [
+              7.851768,
+              48.244607
+            ],
+            [
+              7.833803,
+              48.230474
+            ],
+            [
+              7.833051,
+              48.213326
+            ],
+            [
+              7.85376,
+              48.201323
+            ],
+            [
+              7.881181,
+              48.200645
+            ],
+            [
+              7.906523,
+              48.206658
+            ],
+            [
+              7.919991,
+              48.221978
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-11",
+        "kind": "habitat",
+        "name": "Sample habitat area 12",
+        "score": 60,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-12",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.192387,
+              48.223879
+            ],
+            [
+              8.189111,
+              48.247716
+            ],
+            [
+              8.164372,
+              48.255378
+            ],
+            [
+              8.138304,
+              48.25597
+            ],
+            [
+              8.119812,
+              48.23684
+            ],
+            [
+              8.119256,
+              48.210731
+            ],
+            [
+              8.140496,
+              48.195295
+            ],
+            [
+              8.164614,
+              48.191111
+            ],
+            [
+              8.183577,
+              48.204331
+            ],
+            [
+              8.192387,
+              48.223879
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-12",
+        "kind": "habitat",
+        "name": "Sample habitat area 13",
+        "score": 34,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-13",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.403436,
+              48.191719
+            ],
+            [
+              8.399077,
+              48.2086
+            ],
+            [
+              8.369788,
+              48.214325
+            ],
+            [
+              8.345191,
+              48.20828
+            ],
+            [
+              8.320753,
+              48.200098
+            ],
+            [
+              8.32195,
+              48.183579
+            ],
+            [
+              8.343113,
+              48.173175
+            ],
+            [
+              8.369366,
+              48.170432
+            ],
+            [
+              8.387988,
+              48.179963
+            ],
+            [
+              8.403436,
+              48.191719
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-13",
+        "kind": "habitat",
+        "name": "Sample habitat area 14",
+        "score": 79,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-14",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.648523,
+              48.24578
+            ],
+            [
+              8.642126,
+              48.270677
+            ],
+            [
+              8.617853,
+              48.286352
+            ],
+            [
+              8.586752,
+              48.283362
+            ],
+            [
+              8.57704,
+              48.256956
+            ],
+            [
+              8.567002,
+              48.231214
+            ],
+            [
+              8.587142,
+              48.208825
+            ],
+            [
+              8.616868,
+              48.210391
+            ],
+            [
+              8.636648,
+              48.225147
+            ],
+            [
+              8.648523,
+              48.24578
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-14",
+        "kind": "habitat",
+        "name": "Sample habitat area 15",
+        "score": 73,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-15",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.69271,
+              48.40477
+            ],
+            [
+              7.680517,
+              48.421659
+            ],
+            [
+              7.655809,
+              48.430408
+            ],
+            [
+              7.632574,
+              48.422361
+            ],
+            [
+              7.614203,
+              48.41269
+            ],
+            [
+              7.611096,
+              48.396136
+            ],
+            [
+              7.631353,
+              48.385844
+            ],
+            [
+              7.654677,
+              48.383188
+            ],
+            [
+              7.675978,
+              48.390287
+            ],
+            [
+              7.69271,
+              48.40477
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-15",
+        "kind": "habitat",
+        "name": "Sample habitat area 16",
+        "score": 41,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "wil-2026-10-11-16",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.907663,
+              48.404616
+            ],
+            [
+              7.896464,
+              48.431675
+            ],
+            [
+              7.86754,
+              48.437844
+            ],
+            [
+              7.838077,
+              48.441023
+            ],
+            [
+              7.823777,
+              48.417015
+            ],
+            [
+              7.829022,
+              48.393959
+            ],
+            [
+              7.842081,
+              48.374534
+            ],
+            [
+              7.868716,
+              48.365301
+            ],
+            [
+              7.888056,
+              48.383994
+            ],
+            [
+              7.907663,
+              48.404616
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "wil-2026-10-11-16",
+        "kind": "habitat",
+        "name": "Sample habitat area 17",
+        "score": 68,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-wil-2026-10-11-00",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.822937,
+              47.763932
+            ],
+            [
+              7.810829,
+              47.771333
+            ],
+            [
+              7.799168,
+              47.776918
+            ],
+            [
+              7.781158,
+              47.777435
+            ],
+            [
+              7.768323,
+              47.769386
+            ],
+            [
+              7.771978,
+              47.759224
+            ],
+            [
+              7.781327,
+              47.750594
+            ],
+            [
+              7.798949,
+              47.751641
+            ],
+            [
+              7.810901,
+              47.756498
+            ],
+            [
+              7.822937,
+              47.763932
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-wil-2026-10-11-00",
+        "kind": "change",
+        "name": "Example change zone 01",
+        "indicator": "Crop change",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-wil-2026-10-11-01",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.962073,
+              48.066249
+            ],
+            [
+              7.960854,
+              48.075142
+            ],
+            [
+              7.945352,
+              48.077125
+            ],
+            [
+              7.928122,
+              48.07964
+            ],
+            [
+              7.917522,
+              48.071223
+            ],
+            [
+              7.923575,
+              48.062508
+            ],
+            [
+              7.930215,
+              48.054889
+            ],
+            [
+              7.946129,
+              48.052906
+            ],
+            [
+              7.960849,
+              48.057357
+            ],
+            [
+              7.962073,
+              48.066249
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-wil-2026-10-11-01",
+        "kind": "change",
+        "name": "Example change zone 02",
+        "indicator": "Possible clearing",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-wil-2026-10-11-02",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.10669,
+              48.347304
+            ],
+            [
+              8.101265,
+              48.354922
+            ],
+            [
+              8.089809,
+              48.362415
+            ],
+            [
+              8.071055,
+              48.36088
+            ],
+            [
+              8.061042,
+              48.352197
+            ],
+            [
+              8.05932,
+              48.342059
+            ],
+            [
+              8.071871,
+              48.33452
+            ],
+            [
+              8.089909,
+              48.331875
+            ],
+            [
+              8.100664,
+              48.339967
+            ],
+            [
+              8.10669,
+              48.347304
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-wil-2026-10-11-02",
+        "kind": "change",
+        "name": "Example change zone 03",
+        "indicator": "Crop change",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-wil-2026-10-11-03",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.289982,
+              47.763973
+            ],
+            [
+              8.280037,
+              47.772584
+            ],
+            [
+              8.265288,
+              47.775331
+            ],
+            [
+              8.250312,
+              47.775029
+            ],
+            [
+              8.239011,
+              47.7686
+            ],
+            [
+              8.241968,
+              47.759949
+            ],
+            [
+              8.249764,
+              47.752384
+            ],
+            [
+              8.266244,
+              47.749577
+            ],
+            [
+              8.283196,
+              47.753877
+            ],
+            [
+              8.289982,
+              47.763973
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-wil-2026-10-11-03",
+        "kind": "change",
+        "name": "Example change zone 04",
+        "indicator": "Possible clearing",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-wil-2026-10-11-04",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.46805,
+              48.074375
+            ],
+            [
+              8.462489,
+              48.084557
+            ],
+            [
+              8.445061,
+              48.087841
+            ],
+            [
+              8.429715,
+              48.085148
+            ],
+            [
+              8.420257,
+              48.078567
+            ],
+            [
+              8.420443,
+              48.070222
+            ],
+            [
+              8.42985,
+              48.063733
+            ],
+            [
+              8.44556,
+              48.059325
+            ],
+            [
+              8.456248,
+              48.067127
+            ],
+            [
+              8.46805,
+              48.074375
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-wil-2026-10-11-04",
+        "kind": "change",
+        "name": "Example change zone 05",
+        "indicator": "Crop change",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-wil-2026-10-11-05",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.619225,
+              48.349609
+            ],
+            [
+              8.616657,
+              48.359163
+            ],
+            [
+              8.599861,
+              48.360836
+            ],
+            [
+              8.585793,
+              48.359825
+            ],
+            [
+              8.575475,
+              48.353859
+            ],
+            [
+              8.576787,
+              48.345627
+            ],
+            [
+              8.585176,
+              48.338794
+            ],
+            [
+              8.60035,
+              48.336828
+            ],
+            [
+              8.612326,
+              48.342091
+            ],
+            [
+              8.619225,
+              48.349609
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-wil-2026-10-11-05",
+        "kind": "change",
+        "name": "Example change zone 06",
+        "indicator": "Possible clearing",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    }
+  ]
+}

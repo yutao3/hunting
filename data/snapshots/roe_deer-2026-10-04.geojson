@@ -1,0 +1,1413 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-00",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.728488,
+              47.778095
+            ],
+            [
+              7.722687,
+              47.802485
+            ],
+            [
+              7.695992,
+              47.816177
+            ],
+            [
+              7.666376,
+              47.809414
+            ],
+            [
+              7.652456,
+              47.788919
+            ],
+            [
+              7.649654,
+              47.766418
+            ],
+            [
+              7.665492,
+              47.745493
+            ],
+            [
+              7.694536,
+              47.746928
+            ],
+            [
+              7.716962,
+              47.757728
+            ],
+            [
+              7.728488,
+              47.778095
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-00",
+        "kind": "habitat",
+        "name": "Sample habitat area 01",
+        "score": 71,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-01",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.949908,
+              47.811709
+            ],
+            [
+              7.934265,
+              47.835797
+            ],
+            [
+              7.9062,
+              47.851862
+            ],
+            [
+              7.874784,
+              47.841378
+            ],
+            [
+              7.847223,
+              47.825674
+            ],
+            [
+              7.857813,
+              47.800715
+            ],
+            [
+              7.874059,
+              47.781073
+            ],
+            [
+              7.906244,
+              47.771366
+            ],
+            [
+              7.926412,
+              47.7927
+            ],
+            [
+              7.949908,
+              47.811709
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-01",
+        "kind": "habitat",
+        "name": "Sample habitat area 02",
+        "score": 75,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-02",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.166949,
+              47.821408
+            ],
+            [
+              8.150559,
+              47.838271
+            ],
+            [
+              8.128579,
+              47.851993
+            ],
+            [
+              8.098059,
+              47.847431
+            ],
+            [
+              8.076365,
+              47.832158
+            ],
+            [
+              8.078423,
+              47.811158
+            ],
+            [
+              8.101572,
+              47.799455
+            ],
+            [
+              8.128633,
+              47.79062
+            ],
+            [
+              8.158209,
+              47.80025
+            ],
+            [
+              8.166949,
+              47.821408
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-02",
+        "kind": "habitat",
+        "name": "Sample habitat area 03",
+        "score": 31,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-03",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.459,
+              47.815201
+            ],
+            [
+              8.44423,
+              47.834328
+            ],
+            [
+              8.413641,
+              47.845266
+            ],
+            [
+              8.379823,
+              47.839516
+            ],
+            [
+              8.364864,
+              47.823424
+            ],
+            [
+              8.354846,
+              47.804893
+            ],
+            [
+              8.380027,
+              47.791089
+            ],
+            [
+              8.412937,
+              47.787421
+            ],
+            [
+              8.44566,
+              47.795389
+            ],
+            [
+              8.459,
+              47.815201
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-03",
+        "kind": "habitat",
+        "name": "Sample habitat area 04",
+        "score": 63,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-04",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.661479,
+              47.799201
+            ],
+            [
+              8.646454,
+              47.817382
+            ],
+            [
+              8.624458,
+              47.831843
+            ],
+            [
+              8.597445,
+              47.823078
+            ],
+            [
+              8.579124,
+              47.809042
+            ],
+            [
+              8.575272,
+              47.788345
+            ],
+            [
+              8.592763,
+              47.769457
+            ],
+            [
+              8.624721,
+              47.765482
+            ],
+            [
+              8.645657,
+              47.781503
+            ],
+            [
+              8.661479,
+              47.799201
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-04",
+        "kind": "habitat",
+        "name": "Sample habitat area 05",
+        "score": 83,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-05",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.648542,
+              48.004614
+            ],
+            [
+              7.636883,
+              48.025702
+            ],
+            [
+              7.612159,
+              48.03608
+            ],
+            [
+              7.586642,
+              48.030012
+            ],
+            [
+              7.569376,
+              48.014928
+            ],
+            [
+              7.571308,
+              47.994856
+            ],
+            [
+              7.58578,
+              47.978034
+            ],
+            [
+              7.610993,
+              47.978385
+            ],
+            [
+              7.637285,
+              47.983258
+            ],
+            [
+              7.648542,
+              48.004614
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-05",
+        "kind": "habitat",
+        "name": "Sample habitat area 06",
+        "score": 37,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-06",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.937023,
+              47.996106
+            ],
+            [
+              7.924714,
+              48.012305
+            ],
+            [
+              7.909192,
+              48.028843
+            ],
+            [
+              7.88685,
+              48.019846
+            ],
+            [
+              7.869471,
+              48.00661
+            ],
+            [
+              7.872917,
+              47.986697
+            ],
+            [
+              7.882719,
+              47.96613
+            ],
+            [
+              7.908677,
+              47.965918
+            ],
+            [
+              7.92443,
+              47.980115
+            ],
+            [
+              7.937023,
+              47.996106
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-06",
+        "kind": "habitat",
+        "name": "Sample habitat area 07",
+        "score": 51,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-07",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.144204,
+              47.975738
+            ],
+            [
+              8.139815,
+              47.992234
+            ],
+            [
+              8.109356,
+              47.996944
+            ],
+            [
+              8.081239,
+              47.994715
+            ],
+            [
+              8.056718,
+              47.984391
+            ],
+            [
+              8.05815,
+              47.967358
+            ],
+            [
+              8.075918,
+              47.951944
+            ],
+            [
+              8.111273,
+              47.94885
+            ],
+            [
+              8.134154,
+              47.961725
+            ],
+            [
+              8.144204,
+              47.975738
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-07",
+        "kind": "habitat",
+        "name": "Sample habitat area 08",
+        "score": 83,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-08",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.424184,
+              47.997795
+            ],
+            [
+              8.416178,
+              48.01433
+            ],
+            [
+              8.399199,
+              48.030237
+            ],
+            [
+              8.372977,
+              48.0253
+            ],
+            [
+              8.361203,
+              48.007105
+            ],
+            [
+              8.363879,
+              47.989287
+            ],
+            [
+              8.372401,
+              47.969468
+            ],
+            [
+              8.398808,
+              47.967182
+            ],
+            [
+              8.420123,
+              47.978532
+            ],
+            [
+              8.424184,
+              47.997795
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-08",
+        "kind": "habitat",
+        "name": "Sample habitat area 09",
+        "score": 59,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-09",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.621944,
+              47.996017
+            ],
+            [
+              8.61365,
+              48.01482
+            ],
+            [
+              8.589432,
+              48.031278
+            ],
+            [
+              8.560672,
+              48.018553
+            ],
+            [
+              8.531741,
+              48.007793
+            ],
+            [
+              8.542192,
+              47.986784
+            ],
+            [
+              8.559137,
+              47.971702
+            ],
+            [
+              8.589075,
+              47.96211
+            ],
+            [
+              8.613534,
+              47.977278
+            ],
+            [
+              8.621944,
+              47.996017
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-09",
+        "kind": "habitat",
+        "name": "Sample habitat area 10",
+        "score": 37,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-10",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.683852,
+              48.231312
+            ],
+            [
+              7.680424,
+              48.252045
+            ],
+            [
+              7.652769,
+              48.2632
+            ],
+            [
+              7.619986,
+              48.26076
+            ],
+            [
+              7.601152,
+              48.242231
+            ],
+            [
+              7.598592,
+              48.21975
+            ],
+            [
+              7.626611,
+              48.209783
+            ],
+            [
+              7.652544,
+              48.200307
+            ],
+            [
+              7.67995,
+              48.210855
+            ],
+            [
+              7.683852,
+              48.231312
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-10",
+        "kind": "habitat",
+        "name": "Sample habitat area 11",
+        "score": 70,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-11",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.904464,
+              48.194667
+            ],
+            [
+              7.894807,
+              48.207813
+            ],
+            [
+              7.872724,
+              48.218188
+            ],
+            [
+              7.842157,
+              48.215099
+            ],
+            [
+              7.826313,
+              48.201969
+            ],
+            [
+              7.820595,
+              48.18628
+            ],
+            [
+              7.841279,
+              48.173442
+            ],
+            [
+              7.872115,
+              48.172948
+            ],
+            [
+              7.895496,
+              48.18122
+            ],
+            [
+              7.904464,
+              48.194667
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-11",
+        "kind": "habitat",
+        "name": "Sample habitat area 12",
+        "score": 62,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-12",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.173809,
+              48.182141
+            ],
+            [
+              8.171178,
+              48.204991
+            ],
+            [
+              8.143793,
+              48.218696
+            ],
+            [
+              8.114213,
+              48.209865
+            ],
+            [
+              8.090542,
+              48.194506
+            ],
+            [
+              8.101655,
+              48.172846
+            ],
+            [
+              8.113368,
+              48.153306
+            ],
+            [
+              8.143521,
+              48.146756
+            ],
+            [
+              8.167348,
+              48.16173
+            ],
+            [
+              8.173809,
+              48.182141
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-12",
+        "kind": "habitat",
+        "name": "Sample habitat area 13",
+        "score": 39,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-13",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.39242,
+              48.235775
+            ],
+            [
+              8.37883,
+              48.24947
+            ],
+            [
+              8.354716,
+              48.254448
+            ],
+            [
+              8.326815,
+              48.256182
+            ],
+            [
+              8.307498,
+              48.243862
+            ],
+            [
+              8.319469,
+              48.230042
+            ],
+            [
+              8.331982,
+              48.220204
+            ],
+            [
+              8.354931,
+              48.216442
+            ],
+            [
+              8.374396,
+              48.22409
+            ],
+            [
+              8.39242,
+              48.235775
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-13",
+        "kind": "habitat",
+        "name": "Sample habitat area 14",
+        "score": 66,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-14",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.676671,
+              48.194276
+            ],
+            [
+              8.670181,
+              48.214976
+            ],
+            [
+              8.648117,
+              48.22483
+            ],
+            [
+              8.624357,
+              48.220908
+            ],
+            [
+              8.60437,
+              48.206229
+            ],
+            [
+              8.61284,
+              48.185016
+            ],
+            [
+              8.621808,
+              48.163786
+            ],
+            [
+              8.647102,
+              48.16875
+            ],
+            [
+              8.664888,
+              48.177456
+            ],
+            [
+              8.676671,
+              48.194276
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-14",
+        "kind": "habitat",
+        "name": "Sample habitat area 15",
+        "score": 69,
+        "class": "Field interface",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-15",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.665392,
+              48.42625
+            ],
+            [
+              7.663069,
+              48.451525
+            ],
+            [
+              7.63138,
+              48.455498
+            ],
+            [
+              7.605172,
+              48.453079
+            ],
+            [
+              7.581237,
+              48.438751
+            ],
+            [
+              7.579144,
+              48.413149
+            ],
+            [
+              7.604413,
+              48.398386
+            ],
+            [
+              7.631257,
+              48.397553
+            ],
+            [
+              7.655675,
+              48.405863
+            ],
+            [
+              7.665392,
+              48.42625
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-15",
+        "kind": "habitat",
+        "name": "Sample habitat area 16",
+        "score": 33,
+        "class": "Woodland mosaic",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roe-2026-10-04-16",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.939141,
+              48.416087
+            ],
+            [
+              7.937669,
+              48.43482
+            ],
+            [
+              7.916781,
+              48.448479
+            ],
+            [
+              7.892696,
+              48.439374
+            ],
+            [
+              7.876999,
+              48.425525
+            ],
+            [
+              7.876248,
+              48.406431
+            ],
+            [
+              7.890822,
+              48.390217
+            ],
+            [
+              7.916036,
+              48.387054
+            ],
+            [
+              7.936049,
+              48.398435
+            ],
+            [
+              7.939141,
+              48.416087
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "roe-2026-10-04-16",
+        "kind": "habitat",
+        "name": "Sample habitat area 17",
+        "score": 54,
+        "class": "Vegetation pattern",
+        "indicator": "Illustrative combined index",
+        "confidence": "Not estimated",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional geometry and score for interface development only. Not a validated habitat estimate."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-roe-2026-10-04-00",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.85832,
+              47.766373
+            ],
+            [
+              7.851854,
+              47.775949
+            ],
+            [
+              7.835344,
+              47.778662
+            ],
+            [
+              7.820238,
+              47.777272
+            ],
+            [
+              7.804815,
+              47.771807
+            ],
+            [
+              7.807767,
+              47.761541
+            ],
+            [
+              7.818498,
+              47.753786
+            ],
+            [
+              7.836139,
+              47.75156
+            ],
+            [
+              7.853274,
+              47.756129
+            ],
+            [
+              7.85832,
+              47.766373
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-roe-2026-10-04-00",
+        "kind": "change",
+        "name": "Example change zone 01",
+        "indicator": "Crop change",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-roe-2026-10-04-01",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.000561,
+              48.067216
+            ],
+            [
+              7.993529,
+              48.075599
+            ],
+            [
+              7.980339,
+              48.081984
+            ],
+            [
+              7.96325,
+              48.079282
+            ],
+            [
+              7.950606,
+              48.072329
+            ],
+            [
+              7.956881,
+              48.063382
+            ],
+            [
+              7.965028,
+              48.056875
+            ],
+            [
+              7.979479,
+              48.055179
+            ],
+            [
+              7.993746,
+              48.058731
+            ],
+            [
+              8.000561,
+              48.067216
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-roe-2026-10-04-01",
+        "kind": "change",
+        "name": "Example change zone 02",
+        "indicator": "Possible clearing",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-roe-2026-10-04-02",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.168951,
+              48.357014
+            ],
+            [
+              8.168768,
+              48.366273
+            ],
+            [
+              8.153916,
+              48.372425
+            ],
+            [
+              8.137738,
+              48.368
+            ],
+            [
+              8.125293,
+              48.361859
+            ],
+            [
+              8.12284,
+              48.351669
+            ],
+            [
+              8.137204,
+              48.345511
+            ],
+            [
+              8.1531,
+              48.344195
+            ],
+            [
+              8.170134,
+              48.347113
+            ],
+            [
+              8.168951,
+              48.357014
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-roe-2026-10-04-02",
+        "kind": "change",
+        "name": "Example change zone 03",
+        "indicator": "Crop change",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-roe-2026-10-04-03",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.303888,
+              47.763949
+            ],
+            [
+              8.302448,
+              47.773818
+            ],
+            [
+              8.285306,
+              47.776208
+            ],
+            [
+              8.26812,
+              47.776875
+            ],
+            [
+              8.260765,
+              47.768164
+            ],
+            [
+              8.259335,
+              47.759442
+            ],
+            [
+              8.268998,
+              47.751875
+            ],
+            [
+              8.285256,
+              47.751849
+            ],
+            [
+              8.297038,
+              47.756622
+            ],
+            [
+              8.303888,
+              47.763949
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-roe-2026-10-04-03",
+        "kind": "change",
+        "name": "Example change zone 04",
+        "indicator": "Possible clearing",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-roe-2026-10-04-04",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.462673,
+              48.064772
+            ],
+            [
+              8.459994,
+              48.07378
+            ],
+            [
+              8.445758,
+              48.08044
+            ],
+            [
+              8.427158,
+              48.078029
+            ],
+            [
+              8.414849,
+              48.070067
+            ],
+            [
+              8.418945,
+              48.060313
+            ],
+            [
+              8.429256,
+              48.053551
+            ],
+            [
+              8.44505,
+              48.051355
+            ],
+            [
+              8.458438,
+              48.056496
+            ],
+            [
+              8.462673,
+              48.064772
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-roe-2026-10-04-04",
+        "kind": "change",
+        "name": "Example change zone 05",
+        "indicator": "Crop change",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "chg-roe-2026-10-04-05",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              8.63823,
+              48.353134
+            ],
+            [
+              8.635241,
+              48.361416
+            ],
+            [
+              8.621953,
+              48.366903
+            ],
+            [
+              8.604973,
+              48.365399
+            ],
+            [
+              8.594779,
+              48.357789
+            ],
+            [
+              8.598325,
+              48.349202
+            ],
+            [
+              8.604947,
+              48.340845
+            ],
+            [
+              8.621785,
+              48.339899
+            ],
+            [
+              8.632943,
+              48.345933
+            ],
+            [
+              8.63823,
+              48.353134
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": "chg-roe-2026-10-04-05",
+        "kind": "change",
+        "name": "Example change zone 06",
+        "indicator": "Possible clearing",
+        "source": "Synthetic demo fixture",
+        "note": "Fictional change polygon. No satellite change analysis has been performed."
+      }
+    }
+  ]
+}

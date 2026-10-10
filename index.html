@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142c2b">
+  <meta name="description" content="SAIIL Wildlife Habitat Explorer: interactive EO habitat monitoring and data explorer.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <title>Wildlife Habitat Explorer · SAIIL</title>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+  <link href="./assets/styles.css" rel="stylesheet">
+  <script defer src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script type="module" src="./assets/app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Wildlife Habitat Explorer home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 46 46" fill="none"><path d="M7 33c11-4 13-24 31-25-1 17-9 31-26 31" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M12 35c7-12 14-17 25-24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M20 27l-1-9M28 20l-9-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span><span class="brand-eyebrow">SURREY AI IMAGING</span><span class="brand-title">Wildlife <em>Habitat Explorer</em></span></span>
+      </a>
+      <div class="top-actions">
+        <span class="scope-chip"><span class="small-dot"></span> Black Forest pilot</span>
+        <a href="https://saiil.co.uk/" target="_blank" rel="noopener noreferrer" class="header-link">About SAIIL <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <section class="intro">
+      <div class="intro-text">
+        <span class="overline">EARTH OBSERVATION / HABITAT MONITORING</span>
+        <h1>Explore the landscape. <span>Understand the habitat.</span></h1>
+        <p>A geospatial workspace for species-specific habitat indicators, landscape change and research-ready EO layers.</p>
+      </div>
+      <div class="intro-graphic" aria-hidden="true"><span class="ring ring-a"></span><span class="ring ring-b"></span><span class="ring ring-c"></span><span class="graphic-label">EO / GIS</span></div>
+    </section>
+
+    <section class="kpis" aria-label="Dataset summary">
+      <div class="kpi"><span class="kpi-icon">◈</span><div><span class="kpi-label">Data products</span><strong id="metric-products">—</strong><span class="kpi-sub">Species × dates</span></div></div>
+      <div class="kpi"><span class="kpi-icon">⬡</span><div><span class="kpi-label">Habitat features</span><strong id="metric-patches">—</strong><span class="kpi-sub">Current selection</span></div></div>
+      <div class="kpi"><span class="kpi-icon">◷</span><div><span class="kpi-label">Latest dataset</span><strong id="metric-latest">—</strong><span class="kpi-sub">Acquisition/analysis date</span></div></div>
+      <div class="kpi kpi-last"><span class="kpi-icon">◎</span><div><span class="kpi-label">Pilot coverage</span><strong id="metric-region">—</strong><span class="kpi-sub">Expandable catalogue</span></div></div>
+    </section>
+
+    <div class="workbench">
+      <aside class="panel left-panel" aria-label="Map controls">
+        <div class="panel-heading"><div><div class="section-caption">EXPLORER</div><h2>Layers &amp; filters</h2></div><span class="panel-heading-icon" aria-hidden="true">☷</span></div>
+        <div class="control-group"><div class="control-label"><label>Target species</label></div><div id="species-list" class="segmented" role="group" aria-label="Target species"><span class="control-note">Loading species…</span></div></div>
+        <div class="control-group"><div class="control-label"><label for="snapshot-select">Dataset date</label><span class="tag">Archived outputs</span></div><select id="snapshot-select" class="select"></select><p id="dataset-description" class="control-note">Loading available snapshots…</p></div>
+        <div class="control-group"><div class="control-label"><label for="score-threshold">Minimum habitat score</label><strong id="threshold-label">50</strong></div><input id="score-threshold" type="range" min="0" max="100" value="50" step="5"><div class="range-label"><span>0 · All areas</span><span>100 · Highest</span></div></div>
+        <div class="divider"></div>
+        <div class="control-group"><div class="control-label"><label>Map layers</label><span class="tag">Toggle</span></div>
+          <label class="layer-toggle"><span class="toggle-label"><span class="layer-symbol symbol-raster"></span><span><b>Habitat heatmap</b><small>Georeferenced raster</small></span></span><input type="checkbox" id="layer-heatmap" checked><span class="switch"></span></label>
+          <label class="layer-toggle"><span class="toggle-label"><span class="layer-symbol symbol-polygon"></span><span><b>Habitat polygons</b><small>Filtered candidate areas</small></span></span><input type="checkbox" id="layer-polygons" checked><span class="switch"></span></label>
+          <label class="layer-toggle"><span class="toggle-label"><span class="layer-symbol symbol-change"></span><span><b>Landscape changes</b><small>Example change masks</small></span></span><input type="checkbox" id="layer-changes" checked><span class="switch"></span></label>
+        </div>
+        <div class="control-group opacity-group"><div class="control-label"><label for="raster-opacity">Heatmap opacity</label><span id="opacity-label">65%</span></div><input id="raster-opacity" type="range" min="10" max="100" value="65" step="5"></div>
+        <div class="divider"></div>
+        <div class="control-group"><div class="control-label"><label>Score legend</label><span class="tag">0–100 index</span></div><div class="legend-bar"></div><div class="legend-labels"><span>Low</span><span>Moderate</span><span>High</span></div><p class="control-note">Scores express relative model indices, <b>not animal sighting probabilities</b>.</p></div>
+        <button type="button" class="action primary" id="export-btn"><span aria-hidden="true">↓</span> Download visible GeoJSON</button>
+        <button type="button" class="action secondary" id="reset-btn"><span aria-hidden="true">↗</span> Reset to pilot region</button>
+      </aside>
+
+      <main class="map-column" aria-label="Interactive geographic map">
+        <div class="map-toolbar"><div class="map-toolbar-text"><span class="section-caption">INTERACTIVE GEOSPATIAL VIEW</span><b id="active-product">Habitat explorer</b></div><div class="base-switch" role="group" aria-label="Base map"><button type="button" class="base active" data-basemap="streets" aria-pressed="true">Map</button><button type="button" class="base" data-basemap="satellite" aria-pressed="false">Satellite</button></div></div>
+        <div id="map-container"><div id="map" role="application" aria-label="Map showing example georeferenced habitat layers"></div>
+          <div class="map-top-left"><div class="demo-flag" id="data-status"><span>◆</span> SYNTHETIC DEMONSTRATION</div></div>
+          <div class="map-bottom-left"><span class="map-coordinate" id="coordinates">Move pointer to read coordinates</span></div>
+          <div class="map-bottom-right"><button type="button" id="copy-view" title="Copy view coordinates">⊕ &nbsp; Copy map view</button></div>
+          <div class="map-alert" id="map-alert" hidden></div>
+        </div>
+        <div class="map-footer"><span><span class="status-dot"></span><span id="map-status">Loading dataset…</span></span><span>EPSG:4326 · WGS84</span></div>
+      </main>
+
+      <aside class="panel right-panel" aria-label="Dataset and feature information">
+        <div class="panel-heading"><div><div class="section-caption">ANALYTICS</div><h2>Dataset insights</h2></div><span class="panel-heading-icon">↗</span></div>
+        <div class="insight-highlight"><span class="insight-label">CURRENT SELECTION</span><strong id="insight-count">—</strong><span>habitat polygons at or above threshold</span><div class="mini-track"><span id="mini-track-fill"></span></div></div>
+        <div class="distribution"><div class="control-label"><label>Score distribution</label><span class="tag">By polygon count</span></div><div id="distribution-bars" class="distribution-bars"><p class="control-note">Loading…</p></div></div>
+        <div class="divider"></div>
+        <div class="feature-card"><div class="control-label"><label>Selected area</label><span id="feature-type" class="tag">Map detail</span></div><h3 id="feature-name">Select a polygon</h3><p id="feature-caption">Click any highlighted habitat or change polygon for the available metadata.</p><div id="feature-attributes" class="feature-attributes"><div class="empty-selection">No location selected</div></div></div>
+        <div class="divider"></div>
+        <div class="metadata-card"><div class="control-label"><label>Product provenance</label></div><dl><dt>Species</dt><dd id="meta-species">—</dd><dt>Dataset date</dt><dd id="meta-date">—</dd><dt>Status</dt><dd id="meta-status">—</dd><dt>Resolution</dt><dd id="meta-resolution">—</dd><dt>Coverage</dt><dd id="meta-coverage">—</dd></dl></div>
+        <div class="info-note"><span>ⓘ</span><p>This prototype contains entirely fabricated sample scores and geometries. No animal locations or validated predictions are supplied.</p></div>
+      </aside>
+    </div>
+    <footer class="footer"><span>© 2026 Surrey AI Imaging Ltd · Wildlife Habitat Explorer prototype</span><span>Map data © OpenStreetMap contributors · Basemap providers credited in-map · <a href="./docs/data-guide.html">Data guide</a></span></footer>
+  </div>
+  <noscript><div class="no-script">Enable JavaScript to use the interactive map.</div></noscript>
+</body>
+</html>

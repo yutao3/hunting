@@ -1,3 +1,5 @@
+> **Note (v2):** the web UI now reads **`data/layers.json`**, not `catalog.json`. See [ADDING_LAYERS.md](ADDING_LAYERS.md). This file documents the legacy v1 catalogue used by `scripts/publish_snapshot.py`.
+
 # Public dataset schema / extension reference
 
 The user interface automatically reads `data/catalog.json` on startup.

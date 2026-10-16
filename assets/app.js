@@ -1,11 +1,12 @@
 /* SAIIL Wildlife Habitat Explorer — static frontend, no user tracking or backend. */
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW } from './js/globe.js';
 const DATA_URL = new URL('../data/catalog.json', import.meta.url);
 const DEFAULT_EXTENT = [7.55, 47.67, 8.85, 48.56];
 const SCORE_STOPS = [[0, '#f4deb7'], [25, '#e9bf77'], [50, '#a9d18e'], [75, '#5da986'], [100, '#175d47']];
 const layerIds = ['heatmap-image', 'heatmap-tiles', 'habitat-outline', 'habitat-fill', 'change-outline', 'change-fill'];
 const sourceIds = ['source-image', 'source-tiles', 'source-geojson'];
 const $ = (id) => document.getElementById(id);
-const state = { species: 'roe_deer', snapshot: null, catalog: null, data: null, map: null, basemap: 'streets', sequence: 0, currentStatus: 'initialising' };
+const state = { species: 'roe_deer', snapshot: null, catalog: null, data: null, map: null, basemap: 'satellite', sequence: 0, currentStatus: 'initialising' };
 const formatDate = (d) => { const dt = new Date(`${d}T12:00:00Z`); return Number.isNaN(dt.valueOf()) ? d : dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone:'UTC' }); };
 const cleanText = (val) => String(val ?? '—');
 const resolveURL = (path) => new URL(path, DATA_URL).href.replace(/%7B(z|x|y|s|ratio)%7D/gi, (_match, key) => `{${key.toLowerCase()}}`);
@@ -24,27 +25,24 @@ function warn(message) {
   console.error(message);
 }
 function clearWarn() { $('map-alert').hidden = true; }
-function baseStyle() {
-  return {
-    version: 8,
-    sources: {
-      streets: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'},
-      satellite: { type:'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize:256, attribution:'Tiles © Esri and imagery providers' }
-    },
-    layers: [
-      {id:'base-streets',type:'raster',source:'streets',layout:{visibility:'visible'}},
-      {id:'base-satellite',type:'raster',source:'satellite',layout:{visibility:'none'}}
-    ]
-  };
-}
-function initialiseMap() {
-  if (!window.maplibregl) { warn('MapLibre did not load from the CDN. Check your internet access or the CDN script in index.html.'); return; }
-  const map = new maplibregl.Map({ container: 'map', style:baseStyle(), center:[8.19,48.09], zoom:8.4, minZoom:3, maxZoom:18, attributionControl:false });
+function hideLoading(){ const el=$('map-loading'); if(el) el.hidden=true; }
+async function initialiseMap() {
+  drawStarfield($('starfield'));
+  try { await ensureMapLibre(); }
+  catch (e) { warn('MapLibre did not load from the CDN. Check your internet access or the CDN script in index.html.'); $('map-loading-text').textContent='Map library unavailable'; return; }
+  const flat = new URLSearchParams(location.search).has('flat');
+  const map = new maplibregl.Map({ container: 'map', style:baseStyle(state.basemap), center:GLOBE_VIEW.center, zoom:GLOBE_VIEW.zoom, minZoom:0.8, maxZoom:18, attributionControl:false, canvasContextAttributes:{antialias:true} });
   state.map = map;
   map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'top-right');
   map.addControl(new maplibregl.ScaleControl({maxWidth:100,unit:'metric'}),'bottom-left');
   map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-right');
-  map.on('load', () => { if (state.catalog) loadSnapshot(); });
+  map.on('style.load', () => { state.projection = applyProjection(map, flat ? 'mercator' : 'globe'); updateProjectionButtons(); });
+  map.on('load', () => {
+    state.spinner = createSpinner(map);
+    if (state.catalog) loadSnapshot();
+    hideLoading();
+    if (new URLSearchParams(location.search).has('autofly')) setTimeout(flyToPilot, 2500);
+  });
   map.on('mousemove',(e)=>{
     setText('coordinates',`${e.lngLat.lat.toFixed(5)}° N  ·  ${e.lngLat.lng.toFixed(5)}° E`);
     const layers = ['habitat-fill','change-fill'].filter(id => map.getLayer(id) && map.getLayoutProperty(id,'visibility') !== 'none');
@@ -57,7 +55,13 @@ function initialiseMap() {
     if (hit) showFeature(hit.properties, e.lngLat);
   });
   map.on('error',(error)=>{ console.warn('Map tile or overlay error:', error?.error?.message || error); });
+  setTimeout(hideLoading, 8000);
 }
+function pilotExtent(){ const s=selectedSnapshot(); return safeBounds(s?.extent)?s.extent:DEFAULT_EXTENT; }
+function flyToPilot(){ if(!state.map)return; state.spinner?.stop(); flyToBounds(state.map, pilotExtent()); $('fly-btn').hidden=true; $('globe-btn').hidden=false; }
+function backToGlobe(){ if(!state.map)return; if(state.projection!=='globe') setProjection('globe'); state.map.flyTo({...GLOBE_VIEW, duration:3500, essential:true}); state.map.once('moveend',()=>state.spinner?.start()); $('fly-btn').hidden=false; $('globe-btn').hidden=true; }
+function setProjection(type){ if(!state.map)return; state.projection=applyProjection(state.map,type); updateProjectionButtons(); }
+function updateProjectionButtons(){ document.querySelectorAll('[data-projection]').forEach(b=>{const a=b.dataset.projection===state.projection;b.classList.toggle('active',a);b.setAttribute('aria-pressed',String(a));}); }
 
 function datasetsForSpecies() {
   return [...(state.catalog?.datasets || [])].filter(x=>x.species===state.species).sort((a,b)=>b.date.localeCompare(a.date));
@@ -83,7 +87,7 @@ function updateSpecies() {
   loadSnapshot();
 }
 function safeBounds(b){return Array.isArray(b)&&b.length===4&&b.every(Number.isFinite)&&b[0]<b[2]&&b[1]<b[3]&&b[0]>=-180&&b[2]<=180&&b[1]>=-90&&b[3]<=90;}
-function resetView() { const s=selectedSnapshot(); const b=safeBounds(s?.extent)?s.extent:DEFAULT_EXTENT; state.map?.fitBounds([[b[0],b[1]],[b[2],b[3]]],{padding:38,duration:650,maxZoom:12}); }
+function resetView() { if(!state.map)return; state.spinner?.stop(); flyToBounds(state.map, pilotExtent(), {duration:2500}); $('fly-btn').hidden=true; $('globe-btn').hidden=false; }
 function removeLayersAndSources(){
   if (!state.map) return;
   for(const id of layerIds) if(state.map.getLayer(id)) state.map.removeLayer(id);
@@ -187,7 +191,7 @@ async function loadSnapshot(){
     updateSummaries();
   }catch(err){if(seq!==state.sequence)return;warn(`Dataset load failed: ${err.message}`);setText('map-status','Could not load dataset. See message above.');}
 }
-function updateBasemap(which){state.basemap=which;if(!state.map)return;for(const key of ['streets','satellite']){const id=`base-${key}`;if(state.map.getLayer(id))state.map.setLayoutProperty(id,'visibility',which===key?'visible':'none');}
+function updateBasemap(which){state.basemap=which;if(state.map)setBasemap(state.map,which);
   document.querySelectorAll('[data-basemap]').forEach(button=>{const active=button.dataset.basemap===which;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
 }
 function downloadVisible(){
@@ -211,6 +215,9 @@ function attachControls(){
   for(const name of ['layer-heatmap','layer-polygons','layer-changes'])$(name).addEventListener('change',updateVisibility);
   $('raster-opacity').addEventListener('input',updateVisibility);
   $('reset-btn').addEventListener('click',resetView);
+  $('fly-btn').addEventListener('click',flyToPilot);
+  $('globe-btn').addEventListener('click',backToGlobe);
+  document.querySelectorAll('[data-projection]').forEach(b=>b.addEventListener('click',()=>setProjection(b.dataset.projection)));
   $('export-btn').addEventListener('click',downloadVisible);
   document.querySelectorAll('[data-basemap]').forEach(button=>button.addEventListener('click',()=>updateBasemap(button.dataset.basemap)));
   $('copy-view').addEventListener('click',async()=>{

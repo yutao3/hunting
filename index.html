@@ -8,9 +8,10 @@
   <link rel="icon" type="image/png" href="./assets/SAIIL-favicon.png">
   <link rel="apple-touch-icon" href="./assets/SAIIL-favicon.png">
   <title>Wildlife Habitat Explorer · SAIIL</title>
-  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+  <!-- MapLibre GL JS 5.24.0 (pinned). app.js retries from jsDelivr if unpkg is unreachable. -->
+  <link id="maplibre-css" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
   <link href="./assets/styles.css" rel="stylesheet">
-  <script defer src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script defer src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
   <script type="module" src="./assets/app.js"></script>
 </head>
 <body>
@@ -62,8 +63,10 @@
       </aside>
 
       <main class="map-column" aria-label="Interactive geographic map">
-        <div class="map-toolbar"><div class="map-toolbar-text"><span class="section-caption">INTERACTIVE GEOSPATIAL VIEW</span><b id="active-product">Habitat explorer</b></div><div class="base-switch" role="group" aria-label="Base map"><button type="button" class="base active" data-basemap="streets" aria-pressed="true">Map</button><button type="button" class="base" data-basemap="satellite" aria-pressed="false">Satellite</button></div></div>
-        <div id="map-container"><div id="map" role="application" aria-label="Map showing example georeferenced habitat layers"></div>
+        <div class="map-toolbar"><div class="map-toolbar-text"><span class="section-caption">INTERACTIVE GEOSPATIAL VIEW</span><b id="active-product">Habitat explorer</b></div><div class="toolbar-switches"><div class="base-switch" role="group" aria-label="Projection"><button type="button" class="base active" data-projection="globe" aria-pressed="true">3D Globe</button><button type="button" class="base" data-projection="mercator" aria-pressed="false">2D</button></div><div class="base-switch" role="group" aria-label="Base map"><button type="button" class="base" data-basemap="streets" aria-pressed="false">Map</button><button type="button" class="base active" data-basemap="satellite" aria-pressed="true">Satellite</button></div></div></div>
+        <div id="map-container"><canvas id="starfield" aria-hidden="true"></canvas><div id="map" role="application" aria-label="Map showing example georeferenced habitat layers"></div>
+          <div class="map-loading" id="map-loading" role="status"><span class="spinner" aria-hidden="true"></span><span id="map-loading-text">Loading globe…</span></div>
+          <div class="map-fly"><button type="button" id="fly-btn" class="fly-btn">✈ Fly to Black Forest pilot</button><button type="button" id="globe-btn" class="fly-btn ghost" hidden>◍ Back to globe</button></div>
           <div class="map-top-left"><div class="demo-flag" id="data-status"><span>◆</span> SYNTHETIC DEMONSTRATION</div></div>
           <div class="map-bottom-left"><span class="map-coordinate" id="coordinates">Move pointer to read coordinates</span></div>
           <div class="map-bottom-right"><button type="button" id="copy-view" title="Copy view coordinates">⊕ &nbsp; Copy map view</button></div>

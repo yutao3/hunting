@@ -82,3 +82,11 @@
 .popup-meta{font-size:10px;color:#7c6a3a;font-weight:700;letter-spacing:.03em}
 .demo-flag{max-width:calc(100vw - 120px);line-height:1.35}
 .map-footer a{text-decoration:underline}
+
+/* Keep the map a fixed, viewport-sized panel (the generated layer list can be long) */
+@media(min-width:721px){
+  .workbench{align-items:start}
+  .map-column{position:sticky;top:10px}
+  #map-container{flex:none;height:calc(100vh - 150px);min-height:520px;max-height:900px}
+}
+@media(max-width:720px){#map-container{height:62vh;min-height:420px}}

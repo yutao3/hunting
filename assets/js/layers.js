@@ -3,7 +3,7 @@
    *layers* (how it is drawn), and keeps them in sync with the UI state:
    visibility, opacity, selected species, selected date and minimum score. */
 
-import { layerForSpecies, versionFor } from './manifest.js';
+import { layerForSpecies, versionFor } from './manifest.js?v=20261016b';
 
 const PMTILES_JS = 'https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js';
 const ANCHOR_RASTERS = 'anchor-rasters';   // raster overlays are inserted below this
@@ -126,7 +126,7 @@ export class LayerManager {
       if (seq !== st.seq) return;          // a newer request superseded this one
       st.version = v;
     }
-    if (!this.isActive(l)) return;
+    if (!this.isActive(l)) { this.#setVisibility(l, false); return; }   // switched off while loading
     this.#setVisibility(l, true);
     this.#paint(l);
   }

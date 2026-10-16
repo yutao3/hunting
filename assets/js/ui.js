@@ -76,7 +76,7 @@ export function buildLayerPanel(container, mgr, { onToggle, onOpacity }) {
         el('label', { class: 'layer-toggle', for: inputId },
           el('span', { class: 'toggle-label' },
             el('span', { class: 'layer-symbol', style: symbolStyle(l) }),
-            el('span', {}, el('b', {}, l.title), el('small', { class: 'layer-meta' }, `${TYPE_LABEL[l.type] || l.type} · ${formatDate(l.versions[0].date)}`))),
+            el('span', {}, el('b', {}, l.title, l.status === 'real' ? el('i', { class: 'real-tag' }, 'REAL') : l.status === 'synthetic' ? el('i', { class: 'syn-tag' }, 'DEMO') : null), el('small', { class: 'layer-meta' }, `${TYPE_LABEL[l.type] || l.type} · ${formatDate(l.versions[0].date)}`))),
           el('input', { type: 'checkbox', id: inputId, checked: st.visible, onchange: (e) => onToggle(l.id, e.target.checked) }),
           el('span', { class: 'switch', 'aria-hidden': 'true' })),
         el('div', { class: 'layer-extra' },
@@ -99,7 +99,9 @@ export function refreshLayerPanel(container, mgr, selectedDate) {
     row.classList.toggle('on', st.visible);
     const v = st.version || l.versions.find(x => !selectedDate || x.date <= selectedDate) || l.versions[l.versions.length - 1];
     const nearest = selectedDate && v.date !== selectedDate ? ' (nearest)' : '';
-    row.querySelector('.layer-meta').textContent = `${TYPE_LABEL[l.type] || l.type} · ${formatDate(v.date)}${nearest}${l.versions.length > 1 ? ` · ${l.versions.length} dates` : ''}`;
+    row.querySelector('.layer-meta').textContent = l.realtime
+      ? `${TYPE_LABEL[l.type] || l.type} · LIVE · ${formatDate(v.date)}`
+      : `${TYPE_LABEL[l.type] || l.type} · ${formatDate(v.date)}${nearest}${l.versions.length > 1 ? ` · ${l.versions.length} dates` : ''}`;
     const status = row.querySelector('.layer-status');
     status.textContent = st.error ? `⚠ ${st.error}` : st.loading ? 'Loading…' : '';
     status.classList.toggle('error', !!st.error);

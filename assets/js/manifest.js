@@ -11,7 +11,7 @@ const isBounds = (b) => Array.isArray(b) && b.length === 4 && b.every(Number.isF
 export function resolveUrl(path, base = MANIFEST_URL) {
   if (!path) return null;
   // Keep {z}/{x}/{y} placeholders intact after URL encoding.
-  return new URL(path, base).href.replace(/%7B(z|x|y|s|ratio)%7D/gi, (_m, k) => `{${k.toLowerCase()}}`);
+  return new URL(path, base).href.replace(/%7B(z|x|y|s|ratio|bbox-epsg-3857|date)%7D/gi, (_m, k) => `{${k.toLowerCase()}}`);
 }
 
 export async function loadManifest(url = MANIFEST_URL) {
@@ -31,7 +31,12 @@ export function normaliseManifest(raw, base = MANIFEST_URL) {
     if (seen.has(entry.id)) { warnings.push(`${where}: duplicate id — skipped`); continue; }
     if (!SUPPORTED_TYPES.includes(entry.type)) { warnings.push(`${where}: unsupported type "${entry.type}" — skipped`); continue; }
     // Either a "versions" archive or a single url/date at the top level.
-    const list = Array.isArray(entry.versions) && entry.versions.length ? entry.versions : [{ date: entry.date, url: entry.url, bounds: entry.bounds }];
+    let list = Array.isArray(entry.versions) && entry.versions.length ? entry.versions : [{ date: entry.date, url: entry.url, bounds: entry.bounds }];
+    // "realtime": the newest product is today's (minus lagDays); {date} in the URL is filled in.
+    if (entry.realtime) {
+      const d = new Date(Date.now() - 86400000 * (Number(entry.lagDays) || 0)).toISOString().slice(0, 10);
+      list = list.map(v => ({ ...v, date: v.date || d, url: String(v.url).replaceAll('{date}', d) }));
+    }
     const versions = list
       .filter(v => v && v.url)
       .map(v => ({ ...v, date: v.date || entry.date || '', bounds: v.bounds || entry.bounds, href: resolveUrl(v.url, base) }))

@@ -1,8 +1,8 @@
 {
-  "$comment": "Layer manifest for the Wildlife Habitat Explorer. Add / replace / remove entries in \"layers\" - no JS changes needed. Paths are relative to this file. See docs/ADDING_LAYERS.md.",
+  "$comment": "Layer manifest for the Wildlife Habitat Explorer. Add / replace / remove entries in \"layers\" - no JS changes needed. Paths are relative to this file. See docs/ADDING_LAYERS.md. Real open-data layers first; the synthetic demo habitat model is kept (off by default) as a placeholder until SAIIL Sentinel-2 analytics are published.",
   "schema_version": "2.0",
   "title": "SAIIL Wildlife Habitat Explorer",
-  "status": "synthetic",
+  "status": "mixed",
   "region": {
     "name": "Black Forest (DE)",
     "bounds": [
@@ -28,13 +28,158 @@
   ],
   "layers": [
     {
-      "id": "habitat-polygons-roe-deer",
-      "title": "Habitat score polygons",
-      "type": "geojson",
-      "group": "Habitat suitability",
-      "species": "roe_deer",
+      "id": "sentinel2-cloudless",
+      "title": "Sentinel-2 true colour (annual cloud-free mosaic)",
+      "type": "xyz-tiles",
+      "group": "Satellite imagery (real)",
       "role": "primary",
       "visibleByDefault": true,
+      "description": "Real Copernicus Sentinel-2 imagery at 10 m, composited into a cloud-free annual mosaic. Pick an older year in \"Dataset date\" to compare.",
+      "source": "Copernicus Sentinel-2 · EOX s2maps.eu",
+      "status": "real",
+      "resolution": "10 m",
+      "attribution": "<a href=\"https://s2maps.eu\" target=\"_blank\" rel=\"noopener\">Sentinel-2 cloudless</a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data)",
+      "style": {
+        "opacity": 1,
+        "maxzoom": 15,
+        "color": "#3d6b4f",
+        "legendLabel": "True colour (RGB)"
+      },
+      "versions": [
+        {
+          "date": "2024-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2024 annual mosaic"
+        },
+        {
+          "date": "2023-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2023_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2023 annual mosaic"
+        },
+        {
+          "date": "2022-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2022_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2022 annual mosaic"
+        },
+        {
+          "date": "2021-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2021 annual mosaic"
+        },
+        {
+          "date": "2020-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2020 annual mosaic"
+        },
+        {
+          "date": "2019-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2019_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2019 annual mosaic"
+        },
+        {
+          "date": "2018-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2018_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2018 annual mosaic"
+        },
+        {
+          "date": "2016-12-31",
+          "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg",
+          "description": "Sentinel-2 cloudless 2016 annual mosaic"
+        }
+      ]
+    },
+    {
+      "id": "viirs-daily",
+      "title": "Yesterday's satellite view (NASA VIIRS)",
+      "type": "xyz-tiles",
+      "group": "Satellite imagery (real)",
+      "visibleByDefault": false,
+      "realtime": true,
+      "lagDays": 1,
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/{date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg",
+      "description": "Near-real-time daily true-colour image from the Suomi-NPP satellite (375 m). Shows current cloud and snow cover.",
+      "source": "NASA GIBS / Worldview (VIIRS SNPP)",
+      "status": "real",
+      "resolution": "375 m (daily)",
+      "attribution": "Imagery: NASA EOSDIS GIBS",
+      "style": {
+        "opacity": 0.85,
+        "maxzoom": 9,
+        "color": "#7aa6d6",
+        "legendLabel": "Daily true colour"
+      }
+    },
+    {
+      "id": "ndvi-modis",
+      "title": "Vegetation greenness NDVI (latest 8-day)",
+      "type": "xyz-tiles",
+      "group": "Habitat indicators (real EO)",
+      "visibleByDefault": false,
+      "realtime": true,
+      "lagDays": 0,
+      "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_NDVI_8Day/default/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png",
+      "description": "Latest MODIS Terra 8-day NDVI composite (250 m): food and cover availability. Interim indicator until 10 m Sentinel-2 NDVI from SAIIL.",
+      "source": "NASA GIBS (MODIS Terra MOD13)",
+      "status": "real",
+      "resolution": "250 m (8-day)",
+      "attribution": "NDVI: NASA EOSDIS GIBS",
+      "style": {
+        "opacity": 0.7,
+        "maxzoom": 9,
+        "min": 0,
+        "max": 1,
+        "ramp": [
+          [
+            0,
+            "#c8b28c"
+          ],
+          [
+            0.3,
+            "#e2e27a"
+          ],
+          [
+            0.5,
+            "#9fcf5b"
+          ],
+          [
+            0.7,
+            "#3e9b36"
+          ],
+          [
+            1,
+            "#0b4f17"
+          ]
+        ],
+        "legendLabel": "NDVI"
+      }
+    },
+    {
+      "id": "protected-areas",
+      "title": "Protected areas (WDPA)",
+      "type": "xyz-tiles",
+      "group": "Rules & access (real)",
+      "visibleByDefault": false,
+      "date": "2026-10-01",
+      "url": "https://data-gis.unep-wcmc.org/server/rest/services/ProtectedSites/The_World_Database_of_Protected_Areas/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&f=image",
+      "description": "Nature reserves, national parks and Natura 2000 sites — hunting may be restricted. Check local regulations.",
+      "source": "UNEP-WCMC & IUCN, Protected Planet (WDPA)",
+      "status": "real",
+      "resolution": "Vector, rendered as tiles",
+      "attribution": "Protected areas: UNEP-WCMC &amp; IUCN, Protected Planet",
+      "style": {
+        "opacity": 0.6,
+        "maxzoom": 18,
+        "color": "#7e57c2",
+        "legendLabel": "Protected area"
+      }
+    },
+    {
+      "id": "habitat-polygons-roe-deer",
+      "title": "Habitat score polygons · synthetic",
+      "type": "geojson",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "species": "roe_deer",
+      "visibleByDefault": false,
       "description": "Candidate roe deer habitat patches coloured by habitat score (0-100). SYNTHETIC.",
       "source": "SAIIL synthetic demo fixture (no EO input)",
       "status": "synthetic",
@@ -87,9 +232,9 @@
     },
     {
       "id": "habitat-heatmap-roe-deer",
-      "title": "Habitat heatmap",
+      "title": "Habitat heatmap · synthetic",
       "type": "raster-image",
-      "group": "Habitat suitability",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
       "species": "roe_deer",
       "visibleByDefault": false,
       "bounds": [
@@ -147,12 +292,11 @@
     },
     {
       "id": "habitat-polygons-wild-boar",
-      "title": "Habitat score polygons",
+      "title": "Habitat score polygons · synthetic",
       "type": "geojson",
-      "group": "Habitat suitability",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
       "species": "wild_boar",
-      "role": "primary",
-      "visibleByDefault": true,
+      "visibleByDefault": false,
       "description": "Candidate wild boar habitat patches coloured by habitat score (0-100). SYNTHETIC.",
       "source": "SAIIL synthetic demo fixture (no EO input)",
       "status": "synthetic",
@@ -205,9 +349,9 @@
     },
     {
       "id": "habitat-heatmap-wild-boar",
-      "title": "Habitat heatmap",
+      "title": "Habitat heatmap · synthetic",
       "type": "raster-image",
-      "group": "Habitat suitability",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
       "species": "wild_boar",
       "visibleByDefault": false,
       "bounds": [
@@ -265,10 +409,10 @@
     },
     {
       "id": "landscape-change",
-      "title": "Forest clearings & change",
+      "title": "Forest clearings & change · synthetic",
       "type": "geojson",
-      "group": "Landscape indicators",
-      "visibleByDefault": true,
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "visibleByDefault": false,
       "description": "Example change polygons (clearing, windthrow, harvest). SYNTHETIC.",
       "source": "SAIIL synthetic demo fixture (no EO input)",
       "status": "synthetic",
@@ -292,9 +436,9 @@
     },
     {
       "id": "vegetation-vigour",
-      "title": "Vegetation vigour (NDVI-like)",
+      "title": "Vegetation vigour (NDVI-like) · synthetic",
       "type": "raster-image",
-      "group": "Landscape indicators",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
       "visibleByDefault": false,
       "bounds": [
         7.55,
@@ -346,9 +490,9 @@
     },
     {
       "id": "moisture-index",
-      "title": "Moisture index (NDMI-like)",
+      "title": "Moisture index (NDMI-like) · synthetic",
       "type": "raster-image",
-      "group": "Landscape indicators",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
       "visibleByDefault": false,
       "bounds": [
         7.55,
@@ -388,9 +532,9 @@
     },
     {
       "id": "water-bodies",
-      "title": "Water bodies",
+      "title": "Water bodies · synthetic",
       "type": "geojson",
-      "group": "Landscape indicators",
+      "group": "Demo habitat model (SYNTHETIC placeholder)",
       "visibleByDefault": false,
       "date": "2026-10-11",
       "url": "layers/water_bodies_2026-10.geojson",

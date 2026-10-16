@@ -2,7 +2,18 @@
 
 A **static, GitHub Pages** web portal that shows Earth-observation-derived habitat indicators (vegetation, moisture, forest change, water, habitat score) on a **3D globe**. Pilot region: Black Forest, Germany.
 
-**All bundled layers are SYNTHETIC.** Scores, geometries and indices are fabricated for interface demonstration. They are not animal occurrences, validated habitat models or hunting recommendations. The site does not run any EO analytics itself: products are made offline and published as static files.
+**Real data first.** By default the site shows only real, open data, and the live conditions update in real time:
+
+| Layer / panel | Source | Update | Licence / terms |
+|---|---|---|---|
+| Sentinel-2 true colour, 10 m (2016–2024 annual cloud-free mosaics) | [EOX s2maps.eu](https://s2maps.eu), contains modified Copernicus Sentinel data | yearly | 2016: CC BY 4.0. 2018+: **CC BY-NC-SA 4.0** (non-commercial; get an EOX licence or switch to our own Sentinel-2 tiles before selling) |
+| Yesterday's satellite view (VIIRS SNPP true colour, 375 m) | NASA EOSDIS GIBS | daily | NASA open data, attribution requested |
+| Vegetation greenness NDVI (MODIS Terra 8-day, 250 m) | NASA EOSDIS GIBS | every 8 days | NASA open data |
+| Protected areas | UNEP-WCMC & IUCN, Protected Planet (WDPA) | monthly | Free for non-commercial use. Commercial use needs a WDPA licence |
+| Live hunting conditions (wind, gusts, temp, cloud, pressure, rain, 12 h forecast, sunrise/sunset) | [Open-Meteo](https://open-meteo.com) | live (15 min) | CC BY 4.0. The free API is non-commercial, under 10k calls/day. Paid plan for production |
+| Moon phase, daylight window (BJagdG §19) | computed in the browser | live | n/a |
+
+**The habitat-score model is still SYNTHETIC.** It's in the "Demo habitat model" group, switched off by default, and shows a yellow badge when on. It's a placeholder until SAIIL's Sentinel-2 habitat analytics (NDVI/NDMI, canopy, clearings, water) are published as manifest layers. No public, validated habitat-suitability dataset for roe deer or wild boar exists to replace it. Nothing on this site is an animal occurrence or a hunting recommendation.
 
 - Live (branch `dev_v0`): https://hunting.saiil.co.uk
 - Add or replace a layer: **[docs/ADDING_LAYERS.md](docs/ADDING_LAYERS.md)**

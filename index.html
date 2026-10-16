@@ -10,9 +10,9 @@
   <title>Wildlife Habitat Explorer · SAIIL</title>
   <!-- MapLibre GL JS 5.24.0 (pinned). app.js retries from jsDelivr if unpkg is unreachable. -->
   <link id="maplibre-css" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link href="./assets/styles.css?v=20261016c" rel="stylesheet">
+  <link href="./assets/styles.css?v=20261016d" rel="stylesheet">
   <script defer src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-  <script type="module" src="./assets/app.js?v=20261016c"></script>
+  <script type="module" src="./assets/app.js?v=20261016d"></script>
 </head>
 <body>
   <div class="shell">
@@ -31,14 +31,14 @@
       <div class="intro-text">
         <span class="overline">EARTH OBSERVATION / HABITAT MONITORING</span>
         <h1>Explore the landscape. <span>Understand the habitat.</span></h1>
-        <p>A geospatial workspace for species-specific habitat indicators, landscape change and research-ready EO layers.</p>
+        <p>Real Sentinel-2 and NASA satellite layers, protected areas and live wind, weather and light for hunters, with SAIIL habitat analytics plugging in as new layers.</p>
       </div>
       <div class="intro-graphic" aria-hidden="true"><span class="ring ring-a"></span><span class="ring ring-b"></span><span class="ring ring-c"></span><span class="graphic-label">EO / GIS</span></div>
     </section>
 
     <section class="kpis" aria-label="Dataset summary">
       <div class="kpi"><span class="kpi-icon">◈</span><div><span class="kpi-label">Analytics layers</span><strong id="metric-products">—</strong><span class="kpi-sub" id="metric-products-sub">From layer manifest</span></div></div>
-      <div class="kpi"><span class="kpi-icon">⬡</span><div><span class="kpi-label">Habitat features</span><strong id="metric-patches">—</strong><span class="kpi-sub" id="metric-patches-sub">Scored polygons, current date</span></div></div>
+      <div class="kpi"><span class="kpi-icon">⬡</span><div><span class="kpi-label">Wind now</span><strong id="metric-patches">—</strong><span class="kpi-sub" id="metric-patches-sub">Live · map centre</span></div></div>
       <div class="kpi"><span class="kpi-icon">◷</span><div><span class="kpi-label">Dataset date</span><strong id="metric-latest">—</strong><span class="kpi-sub" id="metric-latest-sub">Acquisition/analysis date</span></div></div>
       <div class="kpi kpi-last"><span class="kpi-icon">◎</span><div><span class="kpi-label">Pilot coverage</span><strong id="metric-region">—</strong><span class="kpi-sub">Expandable catalogue</span></div></div>
     </section>
@@ -63,7 +63,7 @@
         <div id="map-container"><canvas id="starfield" aria-hidden="true"></canvas><div id="map" role="application" aria-label="Map showing example georeferenced habitat layers"></div>
           <div class="map-loading" id="map-loading" role="status"><span class="spinner" aria-hidden="true"></span><span id="map-loading-text">Loading globe…</span></div>
           <div class="map-fly"><button type="button" id="fly-btn" class="fly-btn">✈ Fly to Black Forest pilot</button><button type="button" id="globe-btn" class="fly-btn ghost" hidden>◍ Back to globe</button></div>
-          <div class="map-top-left"><div class="demo-flag" id="data-status"><span>◆</span> SYNTHETIC DEMONSTRATION — scores and geometries are fabricated</div></div>
+          <div class="map-top-left"><div class="demo-flag" id="data-status"><span>◆</span> Loading…</div><div class="wind-chip" id="wind-chip" hidden></div></div>
           <div class="map-bottom-left"><span class="map-coordinate" id="coordinates">Move pointer to read coordinates</span></div>
           <div class="map-bottom-right"><button type="button" id="copy-view" title="Copy view coordinates">⊕ &nbsp; Copy map view</button></div>
           <div class="map-alert" id="map-alert" hidden></div>
@@ -73,13 +73,15 @@
 
       <aside class="panel right-panel" aria-label="Dataset and feature information">
         <div class="panel-heading"><div><div class="section-caption">ANALYTICS</div><h2>Dataset insights</h2></div><span class="panel-heading-icon">↗</span></div>
-        <div class="insight-highlight"><span class="insight-label">CURRENT SELECTION</span><strong id="insight-count">—</strong><span>habitat polygons at or above threshold</span><div class="mini-track"><span id="mini-track-fill"></span></div></div>
+        <section class="conditions-card" aria-labelledby="cond-title" aria-live="polite"><div class="control-label"><label id="cond-title">Live hunting conditions</label><span class="tag live-tag"><span class="live-dot"></span> LIVE</span></div><p class="control-note cond-where" id="cond-where">Pan the map or click a spot to load real-time weather, wind and light.</p><div id="conditions"><p class="control-note">Loading…</p></div></section>
+        <div class="divider"></div>
+        <div class="insight-highlight"><span class="insight-label">HABITAT SCORE SELECTION</span><strong id="insight-count">—</strong><span id="insight-sub">habitat polygons at or above threshold</span><div class="mini-track"><span id="mini-track-fill"></span></div></div>
         <div class="distribution"><div class="control-label"><label>Score distribution</label><span class="tag">Visible polygons</span></div><div id="distribution-bars" class="distribution-bars"><p class="control-note">Loading…</p></div></div>
         <div class="divider"></div>
         <div class="feature-card" id="feature-card"><div class="control-label"><label>Selected area</label><span id="feature-type" class="tag">Map detail</span></div><h3 id="feature-name">Select a polygon</h3><p id="feature-caption">Click any highlighted habitat or change polygon for the available metadata.</p><div id="feature-attributes" class="feature-attributes"><div class="empty-selection">No location selected</div></div></div>
         <div class="divider"></div>
         <div class="metadata-card"><div class="control-label"><label>Product provenance</label></div><dl><dt>Layer</dt><dd id="meta-layer">—</dd><dt>Species</dt><dd id="meta-species">—</dd><dt>Dataset date</dt><dd id="meta-date">—</dd><dt>Status</dt><dd id="meta-status">—</dd><dt>Resolution</dt><dd id="meta-resolution">—</dd><dt>Coverage</dt><dd id="meta-coverage">—</dd><dt>Source</dt><dd id="meta-source">—</dd></dl><p class="control-note" id="meta-description"></p></div>
-        <div class="info-note"><span>ⓘ</span><p>This prototype contains entirely fabricated sample scores and geometries. No animal locations or validated predictions are supplied.</p></div>
+        <div class="info-note"><span>ⓘ</span><p><b>Real data:</b> Sentinel-2 imagery (EOX), NASA VIIRS &amp; MODIS NDVI (GIBS), protected areas (WDPA), live weather (Open-Meteo). <b>Synthetic:</b> the demo habitat-score model only, until SAIIL Sentinel-2 habitat analytics are published.</p></div>
       </aside>
     </div>
     <footer class="footer"><span>© 2026 Surrey AI Imaging Ltd · Wildlife Habitat Explorer prototype</span><span>Map data © OpenStreetMap contributors · Basemap providers credited in-map · <a href="./docs/data-guide.html">Data guide</a></span></footer>

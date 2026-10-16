@@ -58,7 +58,7 @@ def main():
         for v in versions:
             url, date = v.get('url'), v.get('date') or l.get('date')
             if not url: errors.append(f'{where}: version without url'); continue
-            if not date or len(str(date)) != 10: warnings.append(f'{where}: date should be ISO YYYY-MM-DD (got {date!r})')
+            if not l.get('realtime') and (not date or len(str(date)) != 10): warnings.append(f'{where}: date should be ISO YYYY-MM-DD (got {date!r})')
             if l.get('type') == 'raster-image' and not ok_bounds(v.get('bounds') or l.get('bounds')):
                 errors.append(f'{where}: raster-image needs bounds [west, south, east, north] in EPSG:4326')
             if url.startswith(('http://', 'https://')) or '{z}' in url: continue

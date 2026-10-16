@@ -37,7 +37,8 @@ async function initialiseMap() {
     map.getCanvas().style.cursor = ids.length && map.queryRenderedFeatures(e.point, { layers: ids }).length ? 'pointer' : '';
   });
   map.on('click', onMapClick);
-  await new Promise((resolve) => map.once('load', resolve));
+  // Wait for the style only (not every basemap tile) so panels and layers appear fast on slow links.
+  await new Promise((resolve) => (map.isStyleLoaded() ? resolve() : map.once('style.load', () => setTimeout(resolve, 0))));
   state.spinner = createSpinner(map);
   return map;
 }

@@ -40,3 +40,45 @@
 @media(prefers-reduced-motion:reduce){.spinner{animation:none}}
 .map-bottom-left{bottom:34px}.map-bottom-right{bottom:40px}
 @media(max-width:720px){.map-bottom-right{bottom:50px}}
+
+/* ===== Manifest-driven layer panel (M2) ===== */
+.layer-panel{display:grid;gap:4px}
+.layer-group-title{font-size:10px;letter-spacing:.12em;font-weight:800;color:#669884;text-transform:uppercase;margin:10px 0 2px}
+.layer-group-title:first-child{margin-top:0}
+.layer-row{border:1px solid transparent;border-radius:10px;padding:2px 8px;transition:background .15s,border-color .15s}
+.layer-row.on{background:#f6faf7;border-color:#e3ede6}
+.layer-row .layer-toggle{padding:8px 0}
+.layer-row .toggle-label b{font-size:12px}
+.layer-extra{display:none;padding:0 0 10px}
+.layer-row.on .layer-extra{display:block}
+.control-label.small{font-size:11px;font-weight:700;margin:2px 0 4px;color:#4f6a5d}
+.legend{margin-top:8px}
+.legend .legend-bar{height:9px;border-radius:5px;border:1px solid #0000001a}
+.legend .legend-labels{margin-top:4px}
+.legend-swatch{display:flex;align-items:center;gap:8px;font-size:10px;color:#6f8377}
+.legend-swatch .layer-symbol{width:16px;height:12px}
+.layer-status{font-size:10px;color:#4f6a5d;margin:6px 0 0;min-height:0}
+.layer-status:empty{display:none}
+.layer-status.error{color:#a14a12;font-weight:700}
+
+/* Histogram (M3) */
+.histogram{position:relative;display:grid;grid-template-columns:repeat(10,1fr);gap:3px;align-items:end;height:120px;padding:14px 0 0;border-bottom:1px solid #cfdcd3}
+.hbar{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;min-width:0}
+.hstack{display:flex;flex-direction:column;border-radius:3px 3px 0 0;overflow:hidden;min-height:0;transition:height .2s}
+.hfill-rest{background:#e2e9e4}
+.hfill{background:#3fa37a;transition:flex .2s}
+.hcount{position:absolute;top:-13px;left:0;right:0;text-align:center;font-size:9px;font-weight:750;color:#466356}
+.hthreshold{position:absolute;top:0;bottom:-4px;width:0;border-left:2px dashed #0a66ff;pointer-events:none;transition:left .15s}
+.haxis{display:flex;justify-content:space-between;font-size:9px;color:#889990;margin-top:4px}
+.hsummary{margin-top:8px}
+
+/* Feature info + popup (M3) */
+.chip{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;border:1px solid #0002}
+.feature-card.is-synthetic h3::after{content:"SYNTHETIC";margin-left:8px;font-size:9px;letter-spacing:.06em;color:#784916;background:#fff3d6;border:1px solid #f1dfac;border-radius:5px;padding:2px 5px;vertical-align:2px}
+.metadata-card dd{max-width:170px;overflow-wrap:anywhere}
+.maplibregl-popup-content{border-radius:10px;padding:10px 26px 10px 12px;font-family:inherit;box-shadow:0 6px 24px #0003}
+.popup{font-size:12px;color:#1b302c;display:grid;gap:4px}
+.popup-score{font-weight:700}
+.popup-meta{font-size:10px;color:#7c6a3a;font-weight:700;letter-spacing:.03em}
+.demo-flag{max-width:calc(100vw - 120px);line-height:1.35}
+.map-footer a{text-decoration:underline}

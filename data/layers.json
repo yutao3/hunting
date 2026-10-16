@@ -1,0 +1,408 @@
+{
+  "$comment": "Layer manifest for the Wildlife Habitat Explorer. Add / replace / remove entries in \"layers\" - no JS changes needed. Paths are relative to this file. See docs/ADDING_LAYERS.md.",
+  "schema_version": "2.0",
+  "title": "SAIIL Wildlife Habitat Explorer",
+  "status": "synthetic",
+  "region": {
+    "name": "Black Forest (DE)",
+    "bounds": [
+      7.55,
+      47.67,
+      8.85,
+      48.56
+    ]
+  },
+  "defaults": {
+    "minScore": 50,
+    "basemap": "satellite"
+  },
+  "species": [
+    {
+      "id": "roe_deer",
+      "label": "Roe deer"
+    },
+    {
+      "id": "wild_boar",
+      "label": "Wild boar"
+    }
+  ],
+  "layers": [
+    {
+      "id": "habitat-polygons-roe-deer",
+      "title": "Habitat score polygons",
+      "type": "geojson",
+      "group": "Habitat suitability",
+      "species": "roe_deer",
+      "role": "primary",
+      "visibleByDefault": true,
+      "description": "Candidate roe deer habitat patches coloured by habitat score (0-100). SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "style": {
+        "scoreField": "score",
+        "min": 0,
+        "max": 100,
+        "ramp": [
+          [
+            0,
+            "#f7f4b5"
+          ],
+          [
+            25,
+            "#f2c46b"
+          ],
+          [
+            50,
+            "#a7d38c"
+          ],
+          [
+            75,
+            "#3fa37a"
+          ],
+          [
+            100,
+            "#0f5a46"
+          ]
+        ],
+        "opacity": 0.6,
+        "outlineColor": "#f2fff6",
+        "outlineWidth": 1.3,
+        "filterByScore": true
+      },
+      "versions": [
+        {
+          "date": "2026-10-11",
+          "url": "layers/habitat_score_polygons_roe_deer_2026-10.geojson"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "layers/habitat_score_polygons_roe_deer_2026-09.geojson"
+        },
+        {
+          "date": "2026-08-30",
+          "url": "layers/habitat_score_polygons_roe_deer_2026-08.geojson"
+        }
+      ]
+    },
+    {
+      "id": "habitat-heatmap-roe-deer",
+      "title": "Habitat heatmap",
+      "type": "raster-image",
+      "group": "Habitat suitability",
+      "species": "roe_deer",
+      "visibleByDefault": false,
+      "bounds": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "description": "Smoothed habitat score surface (blue = low, white = high). Georeferenced PNG. SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "style": {
+        "opacity": 0.75,
+        "min": 0,
+        "max": 100,
+        "ramp": [
+          [
+            0,
+            "#08306b"
+          ],
+          [
+            40,
+            "#2171b5"
+          ],
+          [
+            65,
+            "#6baed6"
+          ],
+          [
+            85,
+            "#c6dbef"
+          ],
+          [
+            100,
+            "#ffffff"
+          ]
+        ],
+        "legendLabel": "Habitat score"
+      },
+      "versions": [
+        {
+          "date": "2026-10-11",
+          "url": "layers/habitat_heatmap_roe_deer_2026-10.png"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "layers/habitat_heatmap_roe_deer_2026-09.png"
+        },
+        {
+          "date": "2026-08-30",
+          "url": "layers/habitat_heatmap_roe_deer_2026-08.png"
+        }
+      ]
+    },
+    {
+      "id": "habitat-polygons-wild-boar",
+      "title": "Habitat score polygons",
+      "type": "geojson",
+      "group": "Habitat suitability",
+      "species": "wild_boar",
+      "role": "primary",
+      "visibleByDefault": true,
+      "description": "Candidate wild boar habitat patches coloured by habitat score (0-100). SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "style": {
+        "scoreField": "score",
+        "min": 0,
+        "max": 100,
+        "ramp": [
+          [
+            0,
+            "#f7f4b5"
+          ],
+          [
+            25,
+            "#f2c46b"
+          ],
+          [
+            50,
+            "#a7d38c"
+          ],
+          [
+            75,
+            "#3fa37a"
+          ],
+          [
+            100,
+            "#0f5a46"
+          ]
+        ],
+        "opacity": 0.6,
+        "outlineColor": "#f2fff6",
+        "outlineWidth": 1.3,
+        "filterByScore": true
+      },
+      "versions": [
+        {
+          "date": "2026-10-11",
+          "url": "layers/habitat_score_polygons_wild_boar_2026-10.geojson"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "layers/habitat_score_polygons_wild_boar_2026-09.geojson"
+        },
+        {
+          "date": "2026-08-30",
+          "url": "layers/habitat_score_polygons_wild_boar_2026-08.geojson"
+        }
+      ]
+    },
+    {
+      "id": "habitat-heatmap-wild-boar",
+      "title": "Habitat heatmap",
+      "type": "raster-image",
+      "group": "Habitat suitability",
+      "species": "wild_boar",
+      "visibleByDefault": false,
+      "bounds": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "description": "Smoothed habitat score surface (blue = low, white = high). Georeferenced PNG. SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "resolution": "Demonstration only",
+      "style": {
+        "opacity": 0.75,
+        "min": 0,
+        "max": 100,
+        "ramp": [
+          [
+            0,
+            "#08306b"
+          ],
+          [
+            40,
+            "#2171b5"
+          ],
+          [
+            65,
+            "#6baed6"
+          ],
+          [
+            85,
+            "#c6dbef"
+          ],
+          [
+            100,
+            "#ffffff"
+          ]
+        ],
+        "legendLabel": "Habitat score"
+      },
+      "versions": [
+        {
+          "date": "2026-10-11",
+          "url": "layers/habitat_heatmap_wild_boar_2026-10.png"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "layers/habitat_heatmap_wild_boar_2026-09.png"
+        },
+        {
+          "date": "2026-08-30",
+          "url": "layers/habitat_heatmap_wild_boar_2026-08.png"
+        }
+      ]
+    },
+    {
+      "id": "landscape-change",
+      "title": "Forest clearings & change",
+      "type": "geojson",
+      "group": "Landscape indicators",
+      "visibleByDefault": true,
+      "description": "Example change polygons (clearing, windthrow, harvest). SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "style": {
+        "color": "#f39c34",
+        "opacity": 0.35,
+        "outlineColor": "#b8641a",
+        "outlineWidth": 1.6,
+        "dashed": true
+      },
+      "versions": [
+        {
+          "date": "2026-10-11",
+          "url": "layers/landscape_change_2026-10.geojson"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "layers/landscape_change_2026-09.geojson"
+        }
+      ]
+    },
+    {
+      "id": "vegetation-vigour",
+      "title": "Vegetation vigour (NDVI-like)",
+      "type": "raster-image",
+      "group": "Landscape indicators",
+      "visibleByDefault": false,
+      "bounds": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "description": "Illustrative vegetation index surface. SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "style": {
+        "opacity": 0.7,
+        "min": 0,
+        "max": 1,
+        "ramp": [
+          [
+            0.0,
+            "#a6611a"
+          ],
+          [
+            0.35,
+            "#dfc27d"
+          ],
+          [
+            0.6,
+            "#a6d96a"
+          ],
+          [
+            0.8,
+            "#1a9641"
+          ],
+          [
+            1.0,
+            "#00441b"
+          ]
+        ],
+        "legendLabel": "Index"
+      },
+      "versions": [
+        {
+          "date": "2026-10-11",
+          "url": "layers/vegetation_vigour_2026-10.png"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "layers/vegetation_vigour_2026-09.png"
+        }
+      ]
+    },
+    {
+      "id": "moisture-index",
+      "title": "Moisture index (NDMI-like)",
+      "type": "raster-image",
+      "group": "Landscape indicators",
+      "visibleByDefault": false,
+      "bounds": [
+        7.55,
+        47.67,
+        8.85,
+        48.56
+      ],
+      "date": "2026-10-11",
+      "url": "layers/moisture_index_2026-10.png",
+      "description": "Illustrative canopy/soil moisture surface. SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "style": {
+        "opacity": 0.7,
+        "min": -1,
+        "max": 1,
+        "ramp": [
+          [
+            -1.0,
+            "#fff7bc"
+          ],
+          [
+            -0.19999999999999996,
+            "#7fcdbb"
+          ],
+          [
+            0.3999999999999999,
+            "#2c7fb8"
+          ],
+          [
+            1.0,
+            "#081d58"
+          ]
+        ],
+        "legendLabel": "Index"
+      }
+    },
+    {
+      "id": "water-bodies",
+      "title": "Water bodies",
+      "type": "geojson",
+      "group": "Landscape indicators",
+      "visibleByDefault": false,
+      "date": "2026-10-11",
+      "url": "layers/water_bodies_2026-10.geojson",
+      "description": "Example open-water polygons. SYNTHETIC.",
+      "source": "SAIIL synthetic demo fixture (no EO input)",
+      "status": "synthetic",
+      "style": {
+        "color": "#2b8cff",
+        "opacity": 0.55,
+        "outlineColor": "#0b4f9c",
+        "outlineWidth": 1
+      }
+    }
+  ]
+}

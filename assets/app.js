@@ -1,237 +1,240 @@
-/* SAIIL Wildlife Habitat Explorer — static frontend, no user tracking or backend. */
-import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW } from './js/globe.js';
-const DATA_URL = new URL('../data/catalog.json', import.meta.url);
-const DEFAULT_EXTENT = [7.55, 47.67, 8.85, 48.56];
-const SCORE_STOPS = [[0, '#f4deb7'], [25, '#e9bf77'], [50, '#a9d18e'], [75, '#5da986'], [100, '#175d47']];
-const layerIds = ['heatmap-image', 'heatmap-tiles', 'habitat-outline', 'habitat-fill', 'change-outline', 'change-fill'];
-const sourceIds = ['source-image', 'source-tiles', 'source-geojson'];
-const $ = (id) => document.getElementById(id);
-const state = { species: 'roe_deer', snapshot: null, catalog: null, data: null, map: null, basemap: 'satellite', sequence: 0, currentStatus: 'initialising' };
-const formatDate = (d) => { const dt = new Date(`${d}T12:00:00Z`); return Number.isNaN(dt.valueOf()) ? d : dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone:'UTC' }); };
-const cleanText = (val) => String(val ?? '—');
-const resolveURL = (path) => new URL(path, DATA_URL).href.replace(/%7B(z|x|y|s|ratio)%7D/gi, (_match, key) => `{${key.toLowerCase()}}`);
-const setText = (id, val) => { $(id).textContent = cleanText(val); };
-const habitat = (f) => f?.properties?.kind === 'habitat';
-const change = (f) => f?.properties?.kind === 'change';
-const score = (f) => Number(f?.properties?.score ?? 0);
-const eligible = (f) => habitat(f) && score(f) >= Number($('score-threshold').value);
-const features = () => state.data?.features || [];
-const selectedSnapshot = () => state.catalog?.datasets?.find(d => d.id === state.snapshot) ?? null;
+/* app.js — SAIIL Wildlife Habitat Explorer bootstrap.
+   Wires together: manifest (data/layers.json) → LayerManager → MapLibre globe → UI panels.
+   Static site: no backend, no tracking, no API keys. */
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js';
+import { loadManifest, allDates } from './js/manifest.js';
+import { LayerManager } from './js/layers.js';
+import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor } from './js/ui.js';
 
-function warn(message) {
-  const target = $('map-alert');
-  target.textContent = message;
-  target.hidden = false;
-  console.error(message);
+const params = new URLSearchParams(location.search);
+const state = { map: null, mgr: null, manifest: null, spinner: null, projection: 'globe', basemap: 'satellite', popup: null, selected: null };
+
+/* ---------- messages & loading ---------- */
+let alertTimer;
+function warn(message, sticky = false) {
+  const n = $('map-alert'); n.textContent = message; n.hidden = false; console.error(message);
+  clearTimeout(alertTimer); if (!sticky) alertTimer = setTimeout(() => { n.hidden = true; }, 9000);
 }
-function clearWarn() { $('map-alert').hidden = true; }
-function hideLoading(){ const el=$('map-loading'); if(el) el.hidden=true; }
+function loading(on, text) { const n = $('map-loading'); if (!n) return; n.hidden = !on; if (text) setText('map-loading-text', text); }
+
+/* ---------- map ---------- */
 async function initialiseMap() {
   drawStarfield($('starfield'));
-  try { await ensureMapLibre(); }
-  catch (e) { warn('MapLibre did not load from the CDN. Check your internet access or the CDN script in index.html.'); $('map-loading-text').textContent='Map library unavailable'; return; }
-  const flat = new URLSearchParams(location.search).has('flat');
-  const map = new maplibregl.Map({ container: 'map', style:baseStyle(state.basemap), center:GLOBE_VIEW.center, zoom:GLOBE_VIEW.zoom, minZoom:0.8, maxZoom:18, attributionControl:false, canvasContextAttributes:{antialias:true} });
+  await ensureMapLibre();
+  const map = new maplibregl.Map({
+    container: 'map', style: baseStyle(state.basemap), center: GLOBE_VIEW.center, zoom: globeZoomFor($('map')),
+    minZoom: 0.5, maxZoom: 18, attributionControl: false, canvasContextAttributes: { antialias: true },
+  });
   state.map = map;
-  map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'top-right');
-  map.addControl(new maplibregl.ScaleControl({maxWidth:100,unit:'metric'}),'bottom-left');
-  map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-right');
-  map.on('style.load', () => { state.projection = applyProjection(map, flat ? 'mercator' : 'globe'); updateProjectionButtons(); });
-  map.on('load', () => {
-    state.spinner = createSpinner(map);
-    if (state.catalog) loadSnapshot();
-    hideLoading();
-    if (new URLSearchParams(location.search).has('autofly')) setTimeout(flyToPilot, 2500);
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+  map.addControl(new maplibregl.ScaleControl({ maxWidth: 100, unit: 'metric' }), 'bottom-left');
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+  map.on('style.load', () => { state.projection = applyProjection(map, params.has('flat') ? 'mercator' : 'globe'); updateProjectionButtons(); });
+  map.on('error', (e) => console.warn('Map tile/overlay error:', e?.error?.message || e));
+  map.on('mousemove', (e) => {
+    setText('coordinates', `${e.lngLat.lat.toFixed(5)}° N  ·  ${e.lngLat.lng.toFixed(5)}° E`);
+    const ids = state.mgr?.queryLayerIds() || [];
+    map.getCanvas().style.cursor = ids.length && map.queryRenderedFeatures(e.point, { layers: ids }).length ? 'pointer' : '';
   });
-  map.on('mousemove',(e)=>{
-    setText('coordinates',`${e.lngLat.lat.toFixed(5)}° N  ·  ${e.lngLat.lng.toFixed(5)}° E`);
-    const layers = ['habitat-fill','change-fill'].filter(id => map.getLayer(id) && map.getLayoutProperty(id,'visibility') !== 'none');
-    map.getCanvas().style.cursor = layers.length && map.queryRenderedFeatures(e.point,{layers}).length ? 'pointer' : '';
-  });
-  map.on('click',(e)=>{
-    const ids=['habitat-fill','change-fill'].filter(id => map.getLayer(id) && map.getLayoutProperty(id,'visibility') !== 'none');
-    if (!ids.length) return;
-    const hit=map.queryRenderedFeatures(e.point,{layers:ids})[0];
-    if (hit) showFeature(hit.properties, e.lngLat);
-  });
-  map.on('error',(error)=>{ console.warn('Map tile or overlay error:', error?.error?.message || error); });
-  setTimeout(hideLoading, 8000);
+  map.on('click', onMapClick);
+  await new Promise((resolve) => map.once('load', resolve));
+  state.spinner = createSpinner(map);
+  return map;
 }
-function pilotExtent(){ const s=selectedSnapshot(); return safeBounds(s?.extent)?s.extent:DEFAULT_EXTENT; }
-function flyToPilot(){ if(!state.map)return; state.spinner?.stop(); flyToBounds(state.map, pilotExtent()); $('fly-btn').hidden=true; $('globe-btn').hidden=false; }
-function backToGlobe(){ if(!state.map)return; if(state.projection!=='globe') setProjection('globe'); state.map.flyTo({...GLOBE_VIEW, duration:3500, essential:true}); state.map.once('moveend',()=>state.spinner?.start()); $('fly-btn').hidden=false; $('globe-btn').hidden=true; }
-function setProjection(type){ if(!state.map)return; state.projection=applyProjection(state.map,type); updateProjectionButtons(); }
-function updateProjectionButtons(){ document.querySelectorAll('[data-projection]').forEach(b=>{const a=b.dataset.projection===state.projection;b.classList.toggle('active',a);b.setAttribute('aria-pressed',String(a));}); }
 
-function datasetsForSpecies() {
-  return [...(state.catalog?.datasets || [])].filter(x=>x.species===state.species).sort((a,b)=>b.date.localeCompare(a.date));
+function onMapClick(e) {
+  const { map, mgr } = state; if (!mgr) return;
+  const ids = mgr.queryLayerIds(); if (!ids.length) return;
+  const hit = map.queryRenderedFeatures(e.point, { layers: ids })[0];
+  if (!hit) { state.popup?.remove(); mgr.highlight(null); clearFeature(); return; }
+  const layerId = hit.layer.id.replace(/^lyr-/, '').replace(/-(fill|circle)$/, '');
+  const layer = mgr.get(layerId); const st = mgr.status(layerId);
+  // Use the original GeoJSON feature (full-precision geometry) when available.
+  const original = st.data?.features?.find(f => hit.properties.id !== undefined && f.properties?.id === hit.properties.id);
+  const feature = original || { type: 'Feature', geometry: hit.geometry, properties: hit.properties };
+  const props = feature.properties || {};
+  const synthetic = props.synthetic === true || props.synthetic === 'true' || (st.version?.status || layer.status) === 'synthetic';
+  state.selected = { feature, layer, version: st.version };
+  mgr.highlight(feature);
+  renderFeature({ props, geometry: feature.geometry, layer, version: st.version, lngLat: e.lngLat, synthetic });
+  const s = layer.style || {}; const score = s.scoreField ? props[s.scoreField] : undefined;
+  const content = el('div', { class: 'popup' },
+    el('b', {}, props.name || props.id || layer.title),
+    score !== undefined ? el('div', { class: 'popup-score' }, el('i', { class: 'chip', style: `background:${rampColor(s.ramp, Number(score))}` }), `Score ${score}`) : el('div', {}, props.change_type || props.water_type || layer.title),
+    el('div', { class: 'popup-meta' }, `${formatDate(st.version?.date)}${synthetic ? ' · SYNTHETIC' : ''}`));
+  state.popup?.remove();
+  state.popup = new maplibregl.Popup({ closeButton: true, maxWidth: '240px', offset: 6 }).setLngLat(e.lngLat).setDOMContent(content).addTo(map);
 }
-function speciesLabel(speciesId) { return state.catalog?.species?.find(s=>s.id===speciesId)?.label || speciesId.replaceAll('_',' '); }
+
+/* ---------- views ---------- */
+const regionBounds = () => state.manifest?.region.bounds || [7.55, 47.67, 8.85, 48.56];
+function flyToPilot(duration) {
+  if (!state.map) return;
+  state.spinner?.stop(); flyToBounds(state.map, regionBounds(), duration ? { duration } : {});
+  $('fly-btn').hidden = true; $('globe-btn').hidden = false;
+}
+function backToGlobe() {
+  if (!state.map) return;
+  if (state.projection !== 'globe') setProjection('globe');
+  state.popup?.remove();
+  state.map.flyTo({ ...GLOBE_VIEW, zoom: globeZoomFor($('map')), duration: 3500, essential: true });
+  state.map.once('moveend', () => state.spinner?.start());
+  $('fly-btn').hidden = false; $('globe-btn').hidden = true;
+}
+function setProjection(type) { if (!state.map) return; state.projection = applyProjection(state.map, type); updateProjectionButtons(); }
+function updateProjectionButtons() {
+  document.querySelectorAll('[data-projection]').forEach(b => { const a = b.dataset.projection === state.projection; b.classList.toggle('active', a); b.setAttribute('aria-pressed', String(a)); });
+}
+function updateBasemap(which) {
+  state.basemap = which; if (state.map) setBasemap(state.map, which);
+  document.querySelectorAll('[data-basemap]').forEach(b => { const a = b.dataset.basemap === which; b.classList.toggle('active', a); b.setAttribute('aria-pressed', String(a)); });
+}
+
+/* ---------- manifest-driven controls ---------- */
+function speciesLabel(id) { return state.manifest.species.find(s => s.id === id)?.label || (id ? id.replace(/_/g, ' ') : 'All species'); }
+
 function renderSpecies() {
-  const items=state.catalog.species?.length ? state.catalog.species : [...new Set(state.catalog.datasets.map(s=>s.species))].map(id=>({id,label:id.replaceAll('_',' ')}));
-  const target=$('species-list');target.replaceChildren();
-  for(const item of items){
-    const button=document.createElement('button');button.type='button';button.className='seg';button.textContent=item.label;button.dataset.species=item.id;
-    button.addEventListener('click',()=>{state.species=item.id;updateSpecies();});
-    target.append(button);
+  const target = $('species-list'); const items = state.manifest.species;
+  target.replaceChildren();
+  if (!items.length) { target.closest('.control-group').hidden = true; return; }
+  for (const item of items) {
+    target.append(el('button', { type: 'button', class: 'seg', 'data-species': item.id, onclick: () => selectSpecies(item.id) }, item.label));
   }
-  if(!items.some(item=>item.id===state.species))state.species=items[0]?.id;
-  updateSpecies();
+  markSpecies();
 }
-function updateSpecies() {
-  document.querySelectorAll('[data-species]').forEach(button=>{const active=button.dataset.species===state.species;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
-  const items=datasetsForSpecies();
-  $('snapshot-select').replaceChildren(...items.map(item=>new Option(`${formatDate(item.date)} · ${item.region || 'Dataset'}`,item.id)));
-  if (!items.some(x=>x.id===state.snapshot)) state.snapshot=items[0]?.id ?? null;
-  $('snapshot-select').value=state.snapshot ?? '';
-  loadSnapshot();
+function markSpecies() {
+  document.querySelectorAll('[data-species]').forEach(b => { const a = b.dataset.species === state.mgr.species; b.classList.toggle('active', a); b.setAttribute('aria-pressed', String(a)); });
 }
-function safeBounds(b){return Array.isArray(b)&&b.length===4&&b.every(Number.isFinite)&&b[0]<b[2]&&b[1]<b[3]&&b[0]>=-180&&b[2]<=180&&b[1]>=-90&&b[3]<=90;}
-function resetView() { if(!state.map)return; state.spinner?.stop(); flyToBounds(state.map, pilotExtent(), {duration:2500}); $('fly-btn').hidden=true; $('globe-btn').hidden=false; }
-function removeLayersAndSources(){
-  if (!state.map) return;
-  for(const id of layerIds) if(state.map.getLayer(id)) state.map.removeLayer(id);
-  for(const id of sourceIds) if(state.map.getSource(id)) state.map.removeSource(id);
+async function selectSpecies(id) {
+  const { mgr } = state; mgr.species = id; markSpecies();
+  renderDates(); buildPanel(); clearSelection();
+  await mgr.apply();
 }
-function addMapLayers(snapshot, geojson){
-  const m=state.map;
-  if (!m?.isStyleLoaded()) return;
-  removeLayersAndSources();
-  if(snapshot.raster){
-    const r=snapshot.raster;
-    if(r.type==='image'){
-      if(!safeBounds(r.bounds)) throw new Error(`Raster ${snapshot.id} needs bounds [west,south,east,north] in WGS84.`);
-      const [w,s,e,n]=r.bounds;
-      m.addSource('source-image',{type:'image',url:resolveURL(r.url),coordinates:[[w,n],[e,n],[e,s],[w,s]]});
-      m.addLayer({id:'heatmap-image',type:'raster',source:'source-image',paint:{'raster-opacity':Number($('raster-opacity').value)/100,'raster-fade-duration':0}});
-    }else if(r.type==='xyz'){
-      m.addSource('source-tiles',{type:'raster',tiles:r.tiles.map(resolveURL),tileSize:r.tileSize||256,minzoom:r.minzoom??0,maxzoom:r.maxzoom??18});
-      m.addLayer({id:'heatmap-tiles',type:'raster',source:'source-tiles',paint:{'raster-opacity':Number($('raster-opacity').value)/100,'raster-fade-duration':0}});
-    }
-  }
-  const featureCollection = geojson ?? {type:'FeatureCollection',features:[]};
-  m.addSource('source-geojson',{type:'geojson',data:featureCollection});
-  m.addLayer({id:'habitat-fill',type:'fill',source:'source-geojson',filter:['==',['get','kind'],'habitat'],paint:{'fill-color':['interpolate',['linear'],['coalesce',['to-number',['get','score']],0],...SCORE_STOPS.flat()], 'fill-opacity':0.34}});
-  m.addLayer({id:'habitat-outline',type:'line',source:'source-geojson',filter:['==',['get','kind'],'habitat'],paint:{'line-color':'#215c49','line-width':1.8,'line-opacity':0.85}});
-  m.addLayer({id:'change-fill',type:'fill',source:'source-geojson',filter:['==',['get','kind'],'change'],paint:{'fill-color':'#f3a648','fill-opacity':0.34}});
-  m.addLayer({id:'change-outline',type:'line',source:'source-geojson',filter:['==',['get','kind'],'change'],paint:{'line-color':'#be7b26','line-width':2,'line-dasharray':[2,1.2]}});
-  updateLayerFilters(); updateVisibility();
+
+function renderDates() {
+  const { mgr } = state; const dates = allDates(mgr.layersForSpecies());
+  const sel = $('snapshot-select');
+  sel.replaceChildren(...dates.map((d, i) => new Option(`${formatDate(d)}${i === 0 ? ' · latest' : ' · archive'}`, d)));
+  if (!dates.includes(mgr.date)) mgr.date = dates[0] || null;
+  sel.value = mgr.date || '';
+  setText('archive-tag', `${dates.length} date${dates.length === 1 ? '' : 's'} archived`);
 }
-function updateLayerFilters() {
-  if (!state.map) return;
-  const threshold=Number($('score-threshold').value);
-  setText('threshold-label',threshold);
-  for(const id of ['habitat-fill','habitat-outline']){
-    if(state.map.getLayer(id)) state.map.setFilter(id,['all',['==',['get','kind'],'habitat'],['>=',['coalesce',['to-number',['get','score']],0],threshold]]);
-  }
-  updateSummaries();
-}
-function updateVisibility(){
-  if(!state.map)return;
-  const toggles={
-    'heatmap-image':$('layer-heatmap').checked,'heatmap-tiles':$('layer-heatmap').checked,
-    'habitat-fill':$('layer-polygons').checked,'habitat-outline':$('layer-polygons').checked,
-    'change-fill':$('layer-changes').checked,'change-outline':$('layer-changes').checked
-  };
-  for (const [id,visible] of Object.entries(toggles)) if(state.map.getLayer(id))state.map.setLayoutProperty(id,'visibility',visible?'visible':'none');
-  const opacity=Number($('raster-opacity').value)/100;
-  for(const id of ['heatmap-image','heatmap-tiles']) if(state.map.getLayer(id))state.map.setPaintProperty(id,'raster-opacity',opacity);
-  setText('opacity-label',`${Math.round(opacity*100)}%`);
-}
-function showFeature(properties, lngLat){
-  setText('feature-name',properties.name||properties.id||'Unnamed area');
-  setText('feature-type',properties.kind === 'change' ? 'Change zone' : 'Habitat patch');
-  setText('feature-caption',properties.note || 'User-provided geospatial feature.');
-  const permitted=['score','class','indicator','confidence','model','source','id'];
-  const attrs=permitted.filter(k=>properties[k]!==undefined&&properties[k]!==null)
-    .map(k=>{const wrapper=document.createElement('div');wrapper.className='attribute';const key=document.createElement('span');key.textContent=k.replaceAll('_',' ');const value=document.createElement('b');value.textContent=String(properties[k]);wrapper.append(key,value);return wrapper;});
-  if(lngLat){const wrapper=document.createElement('div');wrapper.className='attribute';const key=document.createElement('span');key.textContent='Clicked point';const value=document.createElement('b');value.textContent=`${lngLat.lat.toFixed(4)}, ${lngLat.lng.toFixed(4)}`;wrapper.append(key,value);attrs.push(wrapper);}
-  $('feature-attributes').replaceChildren(...attrs);
-}
-function updateSummaries(){
-  const all=features().filter(habitat);
-  const visible=all.filter(eligible);
-  setText('metric-patches',all.length);
-  setText('insight-count',visible.length);
-  $('mini-track-fill').style.width=`${all.length?Math.round(100*visible.length/all.length):0}%`;
-  const bins=[[0,25],[25,50],[50,75],[75,101]];
-  const values=bins.map(([lo,hi])=>all.filter(f=>score(f)>=lo&&score(f)<hi).length);
-  const max=Math.max(...values,1);
-  const node=$('distribution-bars');node.replaceChildren();
-  bins.forEach(([lo,hi],i)=>{
-    const row=document.createElement('div');row.className='dist-row';
-    const label=document.createElement('span');label.textContent=`${lo}–${hi===101?100:hi}`;
-    const track=document.createElement('div');track.className='bar-track';
-    const fill=document.createElement('div');fill.className='bar-fill';fill.style.width=`${Math.round(100*values[i]/max)}%`;
-    fill.style.backgroundColor=['#eccb92','#d6bd77','#a1c889','#3b9472'][i];track.append(fill);
-    const count=document.createElement('strong');count.textContent=String(values[i]);row.append(label,track,count);node.append(row);
+
+function buildPanel() {
+  buildLayerPanel($('layer-panel'), state.mgr, {
+    onToggle: (id, on) => { state.mgr.setVisible(id, on); if (!on && state.selected?.layer.id === id) clearSelection(); },
+    onOpacity: (id, o) => state.mgr.setOpacity(id, o),
   });
 }
-async function loadSnapshot(){
-  const snapshot=selectedSnapshot();if(!snapshot||!state.map?.isStyleLoaded())return;
-  const seq=++state.sequence;clearWarn();
-  try{
-    setText('map-status',`Loading ${snapshot.id}…`);
-    let geojson={type:'FeatureCollection',features:[]};
-    if(snapshot.geojson){const res=await fetch(resolveURL(snapshot.geojson),{cache:'no-cache'});if(!res.ok)throw new Error(`Could not load ${snapshot.geojson} (HTTP ${res.status}).`);geojson=await res.json();if(geojson.type!=='FeatureCollection'||!Array.isArray(geojson.features))throw new Error('GeoJSON must be a FeatureCollection.');}
-    if(seq!==state.sequence)return;
-    state.data=geojson;
-    addMapLayers(snapshot,geojson);
-    const speciesName=speciesLabel(state.species);
-    setText('active-product',`${speciesName} · ${formatDate(snapshot.date)}`);
-    setText('dataset-description',snapshot.description||'No dataset notes supplied.');
-    setText('meta-species',speciesName);setText('meta-date',formatDate(snapshot.date));
-    setText('meta-status',snapshot.status||'Unspecified');setText('meta-resolution',snapshot.resolution||'Not specified');setText('meta-coverage',snapshot.region||'Not specified');
-    setText('map-status',`${features().length} loaded features · ${snapshot.status||'data'} · ${snapshot.id}`);
-    $('data-status').textContent=snapshot.status==='synthetic'?'◆  SYNTHETIC DEMONSTRATION':`◆  ${String(snapshot.status||'DATASET').toUpperCase()}`;
-    setText('metric-latest',formatDate(snapshot.date));setText('metric-region',snapshot.region||'Pilot');
-    setText('metric-products',state.catalog.datasets.length);
-    setText('feature-name','Select a polygon');setText('feature-caption','Click a map polygon to inspect attributes.');setText('feature-type','Map detail');
-    $('feature-attributes').innerHTML='<div class="empty-selection">No location selected</div>';
-    updateSummaries();
-  }catch(err){if(seq!==state.sequence)return;warn(`Dataset load failed: ${err.message}`);setText('map-status','Could not load dataset. See message above.');}
+
+function clearSelection() { state.popup?.remove(); state.mgr?.highlight(null); state.selected = null; clearFeature(); }
+
+/* ---------- analytics / KPIs / provenance ---------- */
+function updateAnalytics() {
+  const { mgr, manifest } = state; if (!mgr) return;
+  refreshLayerPanel($('layer-panel'), mgr, mgr.date);
+  const threshold = mgr.minScore;
+  setText('threshold-label', threshold);
+  const scored = mgr.features({ scoredOnly: true });
+  const primary = mgr.primaryLayer();
+  const ps = primary?.style || {};
+  const { shown, total } = renderHistogram($('distribution-bars'), scored, { threshold, ramp: ps.ramp, field: ps.scoreField || 'score', min: ps.min ?? 0, max: ps.max ?? 100 });
+  setText('insight-count', shown);
+  $('mini-track-fill').style.width = `${total ? Math.round((100 * shown) / total) : 0}%`;
+
+  // KPIs
+  const layers = mgr.layersForSpecies();
+  setText('metric-products', layers.length);
+  setText('metric-products-sub', `${layers.reduce((s, l) => s + l.versions.length, 0)} dated outputs in archive`);
+  setText('metric-patches', total);
+  const dates = allDates(layers);
+  setText('metric-latest', formatDate(mgr.date));
+  setText('metric-latest-sub', mgr.date === dates[0] ? 'Latest available output' : `Archive view · latest ${formatDate(dates[0])}`);
+  setText('metric-region', manifest.region.name);
+
+  // Provenance from the primary layer's active version
+  const v = primary ? (mgr.status(primary.id).version || primary.versions[0]) : null;
+  setText('meta-layer', primary?.title || '—');
+  setText('meta-species', primary?.species ? speciesLabel(primary.species) : speciesLabel(mgr.species));
+  setText('meta-date', formatDate(v?.date));
+  setText('meta-status', v?.status || primary?.status || manifest.status || 'Unspecified');
+  setText('meta-resolution', v?.resolution || primary?.resolution || 'Not specified');
+  setText('meta-coverage', manifest.region.name);
+  setText('meta-source', v?.source || primary?.source || '—');
+  setText('meta-description', v?.description || primary?.description || '');
+  setText('dataset-description', `${speciesLabel(mgr.species)} · layers show the newest output on or before ${formatDate(mgr.date)}.`);
+  setText('active-product', `${speciesLabel(mgr.species)} · ${formatDate(mgr.date)}`);
+  const anySynthetic = manifest.status === 'synthetic' || layers.some(l => mgr.isActive(l) && l.status === 'synthetic');
+  $('data-status').replaceChildren(el('span', {}, '◆'), anySynthetic ? ' SYNTHETIC DEMONSTRATION — scores and geometries are fabricated' : ` ${String(primary?.status || 'DATASET').toUpperCase()}`);
+  const loadingAny = layers.some(l => mgr.status(l.id).loading);
+  const n = mgr.features().length;
+  setText('map-status', loadingAny ? 'Loading layers…' : `${layers.filter(l => mgr.isActive(l)).length} layers on · ${n} features loaded · ${formatDate(mgr.date)}`);
 }
-function updateBasemap(which){state.basemap=which;if(state.map)setBasemap(state.map,which);
-  document.querySelectorAll('[data-basemap]').forEach(button=>{const active=button.dataset.basemap===which;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
-}
-function downloadVisible(){
-  const snapshot=selectedSnapshot();if(!snapshot||!state.data)return;
-  const bounds=state.map?.getBounds();
-  // Geographic bbox overlap is deliberately approximate (vertex bounds), not a full clipping operation.
-  const overlaps = (feature) => {
-    if (!bounds) return true;
-    const coords=[];const walk=(v)=>{if(Array.isArray(v)&&typeof v[0]==='number'&&typeof v[1]==='number')coords.push(v);else if(Array.isArray(v))v.forEach(walk);};
-    walk(feature.geometry?.coordinates);
-    return coords.some(([lon,lat])=>bounds.contains([lon,lat])) || (!coords.length ? false : (()=>{const lon=coords.map(p=>p[0]),lat=coords.map(p=>p[1]);return Math.min(...lon)<=bounds.getEast()&&Math.max(...lon)>=bounds.getWest()&&Math.min(...lat)<=bounds.getNorth()&&Math.max(...lat)>=bounds.getSouth();})());
+
+/* ---------- export ---------- */
+function downloadVisible() {
+  const { mgr, map } = state; if (!mgr) return;
+  const b = map?.getBounds();
+  const overlaps = (f) => {
+    if (!b) return true;
+    const xs = [], ys = [];
+    const walk = (c) => { if (typeof c?.[0] === 'number') { xs.push(c[0]); ys.push(c[1]); } else if (Array.isArray(c)) c.forEach(walk); };
+    walk(f.geometry?.coordinates); if (!xs.length) return false;
+    return Math.min(...xs) <= b.getEast() && Math.max(...xs) >= b.getWest() && Math.min(...ys) <= b.getNorth() && Math.max(...ys) >= b.getSouth();
   };
-  const filter=state.data.features.filter(f=>((habitat(f)&&$('layer-polygons').checked&&eligible(f))||(change(f)&&$('layer-changes').checked))&&overlaps(f));
-  const output={type:'FeatureCollection',name:`${snapshot.id}-filtered-view`,features:filter,metadata:{dataset:snapshot.id,date:snapshot.date,species:snapshot.species,threshold:Number($('score-threshold').value),notice:'Filtered source geometries, not clipped geometries. Raster heatmap is not included.',status:snapshot.status}};
-  const objectURL=URL.createObjectURL(new Blob([JSON.stringify(output,null,2)],{type:'application/geo+json'}));
-  const a=document.createElement('a');a.href=objectURL;a.download=`${snapshot.id}-visible.geojson`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectURL),1000);
+  const features = mgr.features({ applyFilter: true }).filter(({ f }) => overlaps(f))
+    .map(({ f, layer, version }) => ({ ...f, properties: { ...f.properties, layer_id: layer.id, layer_date: version?.date } }));
+  const out = { type: 'FeatureCollection', name: `saiil-visible-${mgr.date}`, features,
+    metadata: { exported: new Date().toISOString(), date: mgr.date, species: mgr.species, min_score: mgr.minScore,
+      status: state.manifest.status, notice: 'Filtered source geometries (not clipped to the view). Raster layers not included. SYNTHETIC demo data.' } };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: 'application/geo+json' }));
+  const a = el('a', { href: url, download: `saiil-visible-${mgr.species || 'all'}-${mgr.date}.geojson` });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setText('map-status', `Downloaded ${features.length} features in view`);
 }
-function attachControls(){
-  $('snapshot-select').addEventListener('change',(event)=>{state.snapshot=event.target.value;loadSnapshot();});
-  $('score-threshold').addEventListener('input',updateLayerFilters);
-  for(const name of ['layer-heatmap','layer-polygons','layer-changes'])$(name).addEventListener('change',updateVisibility);
-  $('raster-opacity').addEventListener('input',updateVisibility);
-  $('reset-btn').addEventListener('click',resetView);
-  $('fly-btn').addEventListener('click',flyToPilot);
-  $('globe-btn').addEventListener('click',backToGlobe);
-  document.querySelectorAll('[data-projection]').forEach(b=>b.addEventListener('click',()=>setProjection(b.dataset.projection)));
-  $('export-btn').addEventListener('click',downloadVisible);
-  document.querySelectorAll('[data-basemap]').forEach(button=>button.addEventListener('click',()=>updateBasemap(button.dataset.basemap)));
-  $('copy-view').addEventListener('click',async()=>{
-    if(!state.map)return;
-    const c=state.map.getCenter();const text=`${c.lat.toFixed(5)}, ${c.lng.toFixed(5)} (zoom ${state.map.getZoom().toFixed(1)})`;
-    try{await navigator.clipboard.writeText(text);setText('map-status',`Copied map center: ${text}`);}catch{setText('map-status',`Map center: ${text}`);}
+
+/* ---------- static controls ---------- */
+function attachControls() {
+  $('fly-btn').addEventListener('click', () => flyToPilot());
+  $('globe-btn').addEventListener('click', backToGlobe);
+  $('reset-btn').addEventListener('click', () => { flyToPilot(2500); });
+  $('export-btn').addEventListener('click', downloadVisible);
+  document.querySelectorAll('[data-basemap]').forEach(b => b.addEventListener('click', () => updateBasemap(b.dataset.basemap)));
+  document.querySelectorAll('[data-projection]').forEach(b => b.addEventListener('click', () => setProjection(b.dataset.projection)));
+  $('snapshot-select').addEventListener('change', (e) => { clearSelection(); state.mgr?.setDate(e.target.value); });
+  $('score-threshold').addEventListener('input', (e) => { setText('threshold-label', e.target.value); state.mgr?.setMinScore(e.target.value); });
+  $('copy-view').addEventListener('click', async () => {
+    if (!state.map) return;
+    const c = state.map.getCenter();
+    const text = `${c.lat.toFixed(5)}, ${c.lng.toFixed(5)} (zoom ${state.map.getZoom().toFixed(1)})`;
+    try { await navigator.clipboard.writeText(text); setText('map-status', `Copied map centre: ${text}`); } catch { setText('map-status', `Map centre: ${text}`); }
   });
 }
-async function start(){
-  attachControls();initialiseMap();
-  try{
-    const res=await fetch(DATA_URL,{cache:'no-cache'});if(!res.ok)throw new Error(`HTTP ${res.status}`);
-    const catalog=await res.json();if(!Array.isArray(catalog.datasets)||!catalog.datasets.length)throw new Error('No datasets found in catalog.json');
-    state.catalog=catalog;renderSpecies();
-  }catch(error){warn(`Cannot load data/catalog.json: ${error.message}. Serve the directory via an HTTP server, not file://.`);setText('map-status','Catalogue not available.');}
+
+/* ---------- start ---------- */
+async function start() {
+  attachControls();
+  updateBasemap(state.basemap);
+  const manifestP = loadManifest().catch((e) => { warn(`Cannot load data/layers.json: ${e.message}. Serve the folder over HTTP (not file://).`, true); return null; });
+  let map;
+  try { map = await initialiseMap(); }
+  catch (e) {
+    loading(true, 'Map unavailable');
+    warn(`The map could not start (${e.message}). Check your connection, or try a browser with WebGL enabled.`, true);
+    return;
+  }
+  loading(true, 'Loading layers…');
+  const manifest = await manifestP;
+  if (!manifest) { loading(false); return; }
+  state.manifest = manifest;
+  if (manifest.defaults.basemap && manifest.defaults.basemap !== state.basemap) updateBasemap(manifest.defaults.basemap);
+  if (manifest.warnings.length) warn(`layers.json: ${manifest.warnings.length} entr${manifest.warnings.length === 1 ? 'y' : 'ies'} skipped — see browser console.`);
+  $('score-threshold').value = manifest.defaults.minScore; setText('threshold-label', manifest.defaults.minScore);
+  state.mgr = new LayerManager(map, manifest, { onChange: updateAnalytics, onError: (m) => warn(`Layer failed: ${m}`) });
+  renderSpecies(); renderDates(); buildPanel(); clearFeature();
+  await state.mgr.apply();
+  loading(false);
+  if (params.has('autofly')) setTimeout(() => flyToPilot(), 2500);
 }
+window.__explorer = state;   // handy for debugging in the browser console
 start();

@@ -134,6 +134,11 @@ export function createSpinner(map, { secondsPerRevolution = 90, maxSpinZoom = 5 
 
 export const PILOT_VIEW = { center: [8.19, 48.1], zoom: 8.6, pitch: 30, bearing: -12 };
 export const GLOBE_VIEW = { center: [12, 32], zoom: 1.6, pitch: 0, bearing: 0 };
+/** Zoom at which the whole globe fits the container (smaller on phones). */
+export function globeZoomFor(el) {
+  const w = el?.clientWidth || 800, h = el?.clientHeight || 600;
+  return Math.max(0.6, Math.min(1.8, Math.log2((Math.min(w, h) * 0.85 * Math.PI) / 512)));
+}
 
 export function flyToBounds(map, bounds, opts = {}) {
   const [w, s, e, n] = bounds;

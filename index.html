@@ -37,9 +37,9 @@
     </section>
 
     <section class="kpis" aria-label="Dataset summary">
-      <div class="kpi"><span class="kpi-icon">◈</span><div><span class="kpi-label">Data products</span><strong id="metric-products">—</strong><span class="kpi-sub">Species × dates</span></div></div>
-      <div class="kpi"><span class="kpi-icon">⬡</span><div><span class="kpi-label">Habitat features</span><strong id="metric-patches">—</strong><span class="kpi-sub">Current selection</span></div></div>
-      <div class="kpi"><span class="kpi-icon">◷</span><div><span class="kpi-label">Latest dataset</span><strong id="metric-latest">—</strong><span class="kpi-sub">Acquisition/analysis date</span></div></div>
+      <div class="kpi"><span class="kpi-icon">◈</span><div><span class="kpi-label">Analytics layers</span><strong id="metric-products">—</strong><span class="kpi-sub" id="metric-products-sub">From layer manifest</span></div></div>
+      <div class="kpi"><span class="kpi-icon">⬡</span><div><span class="kpi-label">Habitat features</span><strong id="metric-patches">—</strong><span class="kpi-sub" id="metric-patches-sub">Scored polygons, current date</span></div></div>
+      <div class="kpi"><span class="kpi-icon">◷</span><div><span class="kpi-label">Dataset date</span><strong id="metric-latest">—</strong><span class="kpi-sub" id="metric-latest-sub">Acquisition/analysis date</span></div></div>
       <div class="kpi kpi-last"><span class="kpi-icon">◎</span><div><span class="kpi-label">Pilot coverage</span><strong id="metric-region">—</strong><span class="kpi-sub">Expandable catalogue</span></div></div>
     </section>
 
@@ -47,17 +47,13 @@
       <aside class="panel left-panel" aria-label="Map controls">
         <div class="panel-heading"><div><div class="section-caption">EXPLORER</div><h2>Layers &amp; filters</h2></div><span class="panel-heading-icon" aria-hidden="true">☷</span></div>
         <div class="control-group"><div class="control-label"><label>Target species</label></div><div id="species-list" class="segmented" role="group" aria-label="Target species"><span class="control-note">Loading species…</span></div></div>
-        <div class="control-group"><div class="control-label"><label for="snapshot-select">Dataset date</label><span class="tag">Archived outputs</span></div><select id="snapshot-select" class="select"></select><p id="dataset-description" class="control-note">Loading available snapshots…</p></div>
+        <div class="control-group"><div class="control-label"><label for="snapshot-select">Dataset date</label><span class="tag" id="archive-tag">Archived outputs</span></div><select id="snapshot-select" class="select"></select><p id="dataset-description" class="control-note">Loading available snapshots…</p></div>
         <div class="control-group"><div class="control-label"><label for="score-threshold">Minimum habitat score</label><strong id="threshold-label">50</strong></div><input id="score-threshold" type="range" min="0" max="100" value="50" step="5"><div class="range-label"><span>0 · All areas</span><span>100 · Highest</span></div></div>
         <div class="divider"></div>
-        <div class="control-group"><div class="control-label"><label>Map layers</label><span class="tag">Toggle</span></div>
-          <label class="layer-toggle"><span class="toggle-label"><span class="layer-symbol symbol-raster"></span><span><b>Habitat heatmap</b><small>Georeferenced raster</small></span></span><input type="checkbox" id="layer-heatmap" checked><span class="switch"></span></label>
-          <label class="layer-toggle"><span class="toggle-label"><span class="layer-symbol symbol-polygon"></span><span><b>Habitat polygons</b><small>Filtered candidate areas</small></span></span><input type="checkbox" id="layer-polygons" checked><span class="switch"></span></label>
-          <label class="layer-toggle"><span class="toggle-label"><span class="layer-symbol symbol-change"></span><span><b>Landscape changes</b><small>Example change masks</small></span></span><input type="checkbox" id="layer-changes" checked><span class="switch"></span></label>
+        <div class="control-group"><div class="control-label"><label>Map layers</label><span class="tag">From layers.json</span></div>
+          <div id="layer-panel" class="layer-panel"><p class="control-note">Loading layer manifest…</p></div>
+          <p class="control-note">Scores express relative model indices, <b>not animal sighting probabilities</b>.</p>
         </div>
-        <div class="control-group opacity-group"><div class="control-label"><label for="raster-opacity">Heatmap opacity</label><span id="opacity-label">65%</span></div><input id="raster-opacity" type="range" min="10" max="100" value="65" step="5"></div>
-        <div class="divider"></div>
-        <div class="control-group"><div class="control-label"><label>Score legend</label><span class="tag">0–100 index</span></div><div class="legend-bar"></div><div class="legend-labels"><span>Low</span><span>Moderate</span><span>High</span></div><p class="control-note">Scores express relative model indices, <b>not animal sighting probabilities</b>.</p></div>
         <button type="button" class="action primary" id="export-btn"><span aria-hidden="true">↓</span> Download visible GeoJSON</button>
         <button type="button" class="action secondary" id="reset-btn"><span aria-hidden="true">↗</span> Reset to pilot region</button>
       </aside>
@@ -67,22 +63,22 @@
         <div id="map-container"><canvas id="starfield" aria-hidden="true"></canvas><div id="map" role="application" aria-label="Map showing example georeferenced habitat layers"></div>
           <div class="map-loading" id="map-loading" role="status"><span class="spinner" aria-hidden="true"></span><span id="map-loading-text">Loading globe…</span></div>
           <div class="map-fly"><button type="button" id="fly-btn" class="fly-btn">✈ Fly to Black Forest pilot</button><button type="button" id="globe-btn" class="fly-btn ghost" hidden>◍ Back to globe</button></div>
-          <div class="map-top-left"><div class="demo-flag" id="data-status"><span>◆</span> SYNTHETIC DEMONSTRATION</div></div>
+          <div class="map-top-left"><div class="demo-flag" id="data-status"><span>◆</span> SYNTHETIC DEMONSTRATION — scores and geometries are fabricated</div></div>
           <div class="map-bottom-left"><span class="map-coordinate" id="coordinates">Move pointer to read coordinates</span></div>
           <div class="map-bottom-right"><button type="button" id="copy-view" title="Copy view coordinates">⊕ &nbsp; Copy map view</button></div>
           <div class="map-alert" id="map-alert" hidden></div>
         </div>
-        <div class="map-footer"><span><span class="status-dot"></span><span id="map-status">Loading dataset…</span></span><span>EPSG:4326 · WGS84</span></div>
+        <div class="map-footer"><span><span class="status-dot"></span><span id="map-status">Loading dataset…</span></span><span>EPSG:4326 · WGS84 · <a href="./data/layers.json" target="_blank" rel="noopener">layers.json</a></span></div>
       </main>
 
       <aside class="panel right-panel" aria-label="Dataset and feature information">
         <div class="panel-heading"><div><div class="section-caption">ANALYTICS</div><h2>Dataset insights</h2></div><span class="panel-heading-icon">↗</span></div>
         <div class="insight-highlight"><span class="insight-label">CURRENT SELECTION</span><strong id="insight-count">—</strong><span>habitat polygons at or above threshold</span><div class="mini-track"><span id="mini-track-fill"></span></div></div>
-        <div class="distribution"><div class="control-label"><label>Score distribution</label><span class="tag">By polygon count</span></div><div id="distribution-bars" class="distribution-bars"><p class="control-note">Loading…</p></div></div>
+        <div class="distribution"><div class="control-label"><label>Score distribution</label><span class="tag">Visible polygons</span></div><div id="distribution-bars" class="distribution-bars"><p class="control-note">Loading…</p></div></div>
         <div class="divider"></div>
-        <div class="feature-card"><div class="control-label"><label>Selected area</label><span id="feature-type" class="tag">Map detail</span></div><h3 id="feature-name">Select a polygon</h3><p id="feature-caption">Click any highlighted habitat or change polygon for the available metadata.</p><div id="feature-attributes" class="feature-attributes"><div class="empty-selection">No location selected</div></div></div>
+        <div class="feature-card" id="feature-card"><div class="control-label"><label>Selected area</label><span id="feature-type" class="tag">Map detail</span></div><h3 id="feature-name">Select a polygon</h3><p id="feature-caption">Click any highlighted habitat or change polygon for the available metadata.</p><div id="feature-attributes" class="feature-attributes"><div class="empty-selection">No location selected</div></div></div>
         <div class="divider"></div>
-        <div class="metadata-card"><div class="control-label"><label>Product provenance</label></div><dl><dt>Species</dt><dd id="meta-species">—</dd><dt>Dataset date</dt><dd id="meta-date">—</dd><dt>Status</dt><dd id="meta-status">—</dd><dt>Resolution</dt><dd id="meta-resolution">—</dd><dt>Coverage</dt><dd id="meta-coverage">—</dd></dl></div>
+        <div class="metadata-card"><div class="control-label"><label>Product provenance</label></div><dl><dt>Layer</dt><dd id="meta-layer">—</dd><dt>Species</dt><dd id="meta-species">—</dd><dt>Dataset date</dt><dd id="meta-date">—</dd><dt>Status</dt><dd id="meta-status">—</dd><dt>Resolution</dt><dd id="meta-resolution">—</dd><dt>Coverage</dt><dd id="meta-coverage">—</dd><dt>Source</dt><dd id="meta-source">—</dd></dl><p class="control-note" id="meta-description"></p></div>
         <div class="info-note"><span>ⓘ</span><p>This prototype contains entirely fabricated sample scores and geometries. No animal locations or validated predictions are supplied.</p></div>
       </aside>
     </div>

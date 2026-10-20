@@ -142,7 +142,7 @@ export function globeZoomFor(el) {
 
 export function flyToBounds(map, bounds, opts = {}) {
   const [w, s, e, n] = bounds;
-  const cam = map.cameraForBounds([[w, s], [e, n]], { padding: 40, maxZoom: 12 }) || {};
+  const cam = map.cameraForBounds([[w, s], [e, n]], { padding: opts.padding ?? 40, maxZoom: 12 }) || {};
   map.flyTo({ center: cam.center ?? PILOT_VIEW.center, zoom: cam.zoom ?? PILOT_VIEW.zoom,
     pitch: opts.pitch ?? 30, bearing: opts.bearing ?? -12, duration: opts.duration ?? 6000, curve: 1.6, essential: true });
 }

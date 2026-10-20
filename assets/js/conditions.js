@@ -4,7 +4,7 @@
    • Moon phase & illumination (computed locally)
    • Scent drift advice from the wind direction */
 
-import { el } from './ui.js?v=20261016d';
+import { el } from './ui.js?v=20261020a';
 
 const CACHE = new Map();               // "lat,lon" -> {t, data}
 const COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];

@@ -33,8 +33,8 @@
       "type": "xyz-tiles",
       "group": "Satellite imagery (real)",
       "role": "primary",
-      "visibleByDefault": true,
-      "description": "Real Copernicus Sentinel-2 imagery at 10 m, composited into a cloud-free annual mosaic. Pick an older year in \"Dataset date\" to compare.",
+      "visibleByDefault": false,
+      "description": "Real Copernicus Sentinel-2 imagery at 10 m, as cloud-free annual mosaics. Covers the base map while on. Pick an older year in \"Dataset date\" to compare.",
       "source": "Copernicus Sentinel-2 · EOX s2maps.eu",
       "status": "real",
       "resolution": "10 m",
@@ -43,7 +43,8 @@
         "opacity": 1,
         "maxzoom": 15,
         "color": "#3d6b4f",
-        "legendLabel": "True colour (RGB)"
+        "legendLabel": "True colour (RGB)",
+        "covers": true
       },
       "versions": [
         {
@@ -106,7 +107,8 @@
         "opacity": 0.85,
         "maxzoom": 9,
         "color": "#7aa6d6",
-        "legendLabel": "Daily true colour"
+        "legendLabel": "Daily true colour",
+        "covers": true
       }
     },
     {
@@ -114,7 +116,7 @@
       "title": "Vegetation greenness NDVI (latest 8-day)",
       "type": "xyz-tiles",
       "group": "Habitat indicators (real EO)",
-      "visibleByDefault": false,
+      "visibleByDefault": true,
       "realtime": true,
       "lagDays": 0,
       "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_NDVI_8Day/default/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png",
@@ -124,7 +126,7 @@
       "resolution": "250 m (8-day)",
       "attribution": "NDVI: NASA EOSDIS GIBS",
       "style": {
-        "opacity": 0.7,
+        "opacity": 0.6,
         "maxzoom": 9,
         "min": 0,
         "max": 1,
@@ -177,7 +179,7 @@
       "id": "habitat-polygons-roe-deer",
       "title": "Habitat score polygons · synthetic",
       "type": "geojson",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "species": "roe_deer",
       "visibleByDefault": false,
       "description": "Candidate roe deer habitat patches coloured by habitat score (0-100). SYNTHETIC.",
@@ -234,7 +236,7 @@
       "id": "habitat-heatmap-roe-deer",
       "title": "Habitat heatmap · synthetic",
       "type": "raster-image",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "species": "roe_deer",
       "visibleByDefault": false,
       "bounds": [
@@ -294,7 +296,7 @@
       "id": "habitat-polygons-wild-boar",
       "title": "Habitat score polygons · synthetic",
       "type": "geojson",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "species": "wild_boar",
       "visibleByDefault": false,
       "description": "Candidate wild boar habitat patches coloured by habitat score (0-100). SYNTHETIC.",
@@ -351,7 +353,7 @@
       "id": "habitat-heatmap-wild-boar",
       "title": "Habitat heatmap · synthetic",
       "type": "raster-image",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "species": "wild_boar",
       "visibleByDefault": false,
       "bounds": [
@@ -411,7 +413,7 @@
       "id": "landscape-change",
       "title": "Forest clearings & change · synthetic",
       "type": "geojson",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "visibleByDefault": false,
       "description": "Example change polygons (clearing, windthrow, harvest). SYNTHETIC.",
       "source": "SAIIL synthetic demo fixture (no EO input)",
@@ -438,7 +440,7 @@
       "id": "vegetation-vigour",
       "title": "Vegetation vigour (NDVI-like) · synthetic",
       "type": "raster-image",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "visibleByDefault": false,
       "bounds": [
         7.55,
@@ -492,7 +494,7 @@
       "id": "moisture-index",
       "title": "Moisture index (NDMI-like) · synthetic",
       "type": "raster-image",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "visibleByDefault": false,
       "bounds": [
         7.55,
@@ -534,7 +536,7 @@
       "id": "water-bodies",
       "title": "Water bodies · synthetic",
       "type": "geojson",
-      "group": "Demo habitat model (SYNTHETIC placeholder)",
+      "group": "Demo habitat model (synthetic)",
       "visibleByDefault": false,
       "date": "2026-10-11",
       "url": "layers/water_bodies_2026-10.geojson",

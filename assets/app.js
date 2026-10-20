@@ -1,11 +1,11 @@
 /* app.js — SAIIL Wildlife Habitat Explorer bootstrap.
    Wires together: manifest (data/layers.json) → LayerManager → MapLibre globe → UI panels.
    Static site: no backend, no tracking, no API keys. */
-import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261016d';
-import { loadManifest, allDates } from './js/manifest.js?v=20261016d';
-import { LayerManager } from './js/layers.js?v=20261016d';
-import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor } from './js/ui.js?v=20261016d';
-import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261016d';
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261020a';
+import { loadManifest, allDates } from './js/manifest.js?v=20261020a';
+import { LayerManager } from './js/layers.js?v=20261020a';
+import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor } from './js/ui.js?v=20261020a';
+import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261020a';
 
 const params = new URLSearchParams(location.search);
 const state = { map: null, mgr: null, manifest: null, spinner: null, projection: 'globe', basemap: 'satellite', popup: null, selected: null };
@@ -13,7 +13,7 @@ const state = { map: null, mgr: null, manifest: null, spinner: null, projection:
 /* ---------- messages & loading ---------- */
 let alertTimer;
 function warn(message, sticky = false) {
-  const n = $('map-alert'); n.textContent = message; n.hidden = false; console.error(message);
+  const n = $('map-alert'); n.textContent = message; n.hidden = false; console.warn(message);
   clearTimeout(alertTimer); if (!sticky) alertTimer = setTimeout(() => { n.hidden = true; }, 9000);
 }
 function loading(on, text) { const n = $('map-loading'); if (!n) return; n.hidden = !on; if (text) setText('map-loading-text', text); }
@@ -38,7 +38,7 @@ async function initialiseMap() {
     map.getCanvas().style.cursor = ids.length && map.queryRenderedFeatures(e.point, { layers: ids }).length ? 'pointer' : '';
   });
   map.on('click', onMapClick);
-  map.on('moveend', scheduleConditions);
+  map.on('moveend', () => scheduleConditions());
   // Wait for the style only (not every basemap tile) so panels and layers appear fast on slow links.
   await new Promise((resolve) => (map.isStyleLoaded() ? resolve() : map.once('style.load', () => setTimeout(resolve, 0))));
   state.spinner = createSpinner(map);
@@ -90,21 +90,30 @@ async function updateConditions(lngLat, label) {
     $('conditions').replaceChildren(el('p', { class: 'control-note' }, `Live weather unavailable (${e.message}). Retrying when you move the map.`));
   }
 }
-function scheduleConditions() {
+function scheduleConditions(immediate) {
   clearTimeout(condTimer);
   condTimer = setTimeout(() => {
     if (!state.map || condPinned) return;
     const z = state.map.getZoom();
     const c = z < 4 ? { lat: 48.1, lng: 8.2 } : state.map.getCenter();
     updateConditions(c, z < 4 ? 'Pilot region (Black Forest)' : 'Map centre');
-  }, 900);
+  }, immediate === true ? 0 : 900);
 }
 
 /* ---------- views ---------- */
 const regionBounds = () => state.manifest?.region.bounds || [7.55, 47.67, 8.85, 48.56];
+const isPhone = () => window.matchMedia('(max-width: 760px)').matches;
+/** Space taken by the floating side panels, so the map centres the region in the visible gap. */
+function panelPadding() {
+  if (isPhone()) return { top: 90, bottom: 90, left: 20, right: 20 };
+  const app = $('app');
+  const l = app.classList.contains('left-collapsed') ? 0 : $('panel-layers').offsetWidth + 12;
+  const r = app.classList.contains('right-collapsed') ? 0 : $('panel-insights').offsetWidth + 12;
+  return { top: 70, bottom: 70, left: 30 + l, right: 30 + r };
+}
 function flyToPilot(duration) {
   if (!state.map) return;
-  state.spinner?.stop(); flyToBounds(state.map, regionBounds(), duration ? { duration } : {});
+  state.spinner?.stop(); flyToBounds(state.map, regionBounds(), { ...(duration ? { duration } : {}), padding: panelPadding() });
   $('fly-btn').hidden = true; $('globe-btn').hidden = false;
 }
 function backToGlobe() {
@@ -119,8 +128,10 @@ function setProjection(type) { if (!state.map) return; state.projection = applyP
 function updateProjectionButtons() {
   document.querySelectorAll('[data-projection]').forEach(b => { const a = b.dataset.projection === state.projection; b.classList.toggle('active', a); b.setAttribute('aria-pressed', String(a)); });
 }
-function updateBasemap(which) {
+function updateBasemap(which, fromUser) {
   state.basemap = which; if (state.map) setBasemap(state.map, which);
+  const covering = state.mgr?.layersForSpecies().filter(l => state.mgr.isActive(l) && l.style?.covers) || [];
+  if (fromUser && covering.length) warn(`"${covering[0].title}" is switched on and covers the base map. Switch it off in Layers to see the ${which === 'streets' ? 'Map' : 'Satellite'} base map.`);
   document.querySelectorAll('[data-basemap]').forEach(b => { const a = b.dataset.basemap === which; b.classList.toggle('active', a); b.setAttribute('aria-pressed', String(a)); });
 }
 
@@ -176,15 +187,17 @@ function updateAnalytics() {
   const ps = scoredLayer?.style || {};
   const { shown, total } = renderHistogram($('distribution-bars'), scored, { threshold, ramp: ps.ramp, field: ps.scoreField || 'score', min: ps.min ?? 0, max: ps.max ?? 100 });
   setText('insight-count', scoredLayer ? shown : '—');
-  setText('insight-sub', scoredLayer ? 'habitat polygons at or above threshold' : 'Habitat score layer: coming with SAIIL Sentinel-2 analytics (switch on the synthetic demo model to preview)');
+  setText('insight-sub', scoredLayer ? 'habitat polygons at or above the minimum score' : 'No habitat score layer yet. It arrives with SAIIL Sentinel-2 analytics. Use "Preview habitat score model" (left) to see how it will work.');
   $('mini-track-fill').style.width = `${total ? Math.round((100 * shown) / total) : 0}%`;
+  $('score-section').classList.toggle('inactive', !scoredLayer);
+  syncDemoButton();
 
   // KPIs
   const layers = mgr.layersForSpecies();
   setText('metric-products', layers.length);
   setText('metric-products-sub', `${layers.reduce((s, l) => s + l.versions.length, 0)} dated outputs in archive`);
   const dates = allDates(layers);
-  setText('metric-latest', formatDate(mgr.date));
+  setText('metric-latest', `${formatDate(mgr.date)}${mgr.date === dates[0] ? '' : ' (archive)'}`);
   setText('metric-latest-sub', mgr.date === dates[0] ? 'Latest available output' : `Archive view · latest ${formatDate(dates[0])}`);
   setText('metric-region', manifest.region.name);
 
@@ -198,7 +211,7 @@ function updateAnalytics() {
   setText('meta-coverage', manifest.region.name);
   setText('meta-source', v?.source || primary?.source || '—');
   setText('meta-description', v?.description || primary?.description || '');
-  setText('dataset-description', `${speciesLabel(mgr.species)} · layers show the newest output on or before ${formatDate(mgr.date)}.`);
+  setText('dataset-description', mgr.date === dates[0] ? 'Showing the newest data. Pick an older date to see archived outputs (e.g. Sentinel-2 from earlier years).' : `Archive view: each layer shows its newest output on or before ${formatDate(mgr.date)}.`);
   setText('active-product', `${speciesLabel(mgr.species)} · ${formatDate(mgr.date)}`);
   const anySynthetic = layers.some(l => mgr.isActive(l) && l.status === 'synthetic');
   const badge = $('data-status'); badge.classList.toggle('real', !anySynthetic);
@@ -230,13 +243,50 @@ function downloadVisible() {
   setText('map-status', `Downloaded ${features.length} features in view`);
 }
 
+/* ---------- demo habitat model (synthetic placeholder) ---------- */
+const demoLayers = () => state.manifest?.layers.filter(l => l.status === 'synthetic' && l.type === 'geojson' && l.style?.scoreField) || [];
+function demoOn() { return demoLayers().some(l => state.mgr?.status(l.id).visible); }
+function syncDemoButton() {
+  const on = demoOn(); const b = $('demo-toggle');
+  b.setAttribute('aria-pressed', String(on));
+  b.textContent = on ? '■ Hide demo habitat model' : '▶ Preview habitat score model (demo)';
+  $('demo-controls').hidden = !on;
+}
+async function toggleDemo() {
+  const { mgr } = state; if (!mgr) return;
+  const on = !demoOn();
+  for (const l of demoLayers()) mgr.status(l.id).visible = on;
+  buildPanel(); if (!on) clearSelection();
+  await mgr.apply();
+  if (on && state.map.getZoom() < 6) flyToPilot();
+  if (on && isPhone()) setTab('map');
+}
+
+/* ---------- panels, phone tabs, help ---------- */
+function setCollapsed(side, collapsed) {
+  $('app').classList.toggle(`${side}-collapsed`, collapsed);
+  $(side === 'left' ? 'open-left' : 'open-right').hidden = !collapsed;
+}
+function setTab(tab) {
+  $('app').dataset.tab = tab;
+  document.querySelectorAll('.mobile-tabs [data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+}
+
 /* ---------- static controls ---------- */
 function attachControls() {
+  $('demo-toggle').addEventListener('click', toggleDemo);
+  document.querySelectorAll('[data-collapse]').forEach(b => b.addEventListener('click', () => setCollapsed(b.dataset.collapse, true)));
+  $('open-left').addEventListener('click', () => setCollapsed('left', false));
+  $('open-right').addEventListener('click', () => setCollapsed('right', false));
+  document.querySelectorAll('.mobile-tabs [data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  $('help-btn').addEventListener('click', () => { const d = $('help'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); });
+  // Phones and small laptops start with the insights panel tucked away so the map has room.
+  if (!isPhone() && window.innerWidth < 1100) setCollapsed('right', true);
   $('fly-btn').addEventListener('click', () => flyToPilot());
   $('globe-btn').addEventListener('click', backToGlobe);
   $('reset-btn').addEventListener('click', () => { flyToPilot(2500); });
   $('export-btn').addEventListener('click', downloadVisible);
-  document.querySelectorAll('[data-basemap]').forEach(b => b.addEventListener('click', () => updateBasemap(b.dataset.basemap)));
+  document.querySelectorAll('[data-basemap]').forEach(b => b.addEventListener('click', () => updateBasemap(b.dataset.basemap, true)));
   document.querySelectorAll('[data-projection]').forEach(b => b.addEventListener('click', () => setProjection(b.dataset.projection)));
   $('snapshot-select').addEventListener('change', (e) => { clearSelection(); state.mgr?.setDate(e.target.value); });
   $('score-threshold').addEventListener('input', (e) => { setText('threshold-label', e.target.value); state.mgr?.setMinScore(e.target.value); });
@@ -271,7 +321,7 @@ async function start() {
   renderSpecies(); renderDates(); buildPanel(); clearFeature();
   await state.mgr.apply();
   loading(false);
-  scheduleConditions();
+  scheduleConditions(true);
   if (params.has('autofly')) setTimeout(() => flyToPilot(), 2500);
 }
 window.__explorer = state;   // handy for debugging in the browser console

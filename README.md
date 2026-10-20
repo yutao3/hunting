@@ -27,6 +27,8 @@ python3 -m http.server 8000      # then open http://localhost:8000
 
 Opening `index.html` as `file://` won't work, because browsers block `fetch()` of local JSON. Useful URL options: `?flat=1` (start in 2D) and `?autofly=1` (fly to the pilot region automatically after load).
 
+**Layout:** a full-screen map with two floating panels: *Layers & filters* (left) and *Conditions & insights* (right). Either can be hidden with its ◂/▸ button. On phones the panels open as bottom sheets from the tab bar. The **How to use** button in the top bar opens a short in-site guide.
+
 ---
 
 ## How this works
@@ -66,6 +68,7 @@ Opening `index.html` as `file://` won't work, because browsers block `fetch()` o
 | `assets/js/globe.js` | Map engine setup: CDN loading/fallback, basemap style, globe projection + sky/atmosphere, starfield canvas, spin controller, fly-to helpers. |
 | `assets/js/manifest.js` | Loads `data/layers.json`, resolves relative URLs, validates entries (bad entries are skipped with a console warning), and holds the date helpers (`versionFor`, `allDates`). |
 | `assets/js/layers.js` | **LayerManager.** Maps each manifest entry to MapLibre sources and layers. Supports `geojson`, `raster-image`, `xyz-tiles` and `pmtiles` (the pmtiles library is loaded only if needed). |
+| `assets/js/conditions.js` | Live hunting conditions: Open-Meteo weather and wind, scent-drift advice, sunrise/sunset and the legal daylight window, moon phase. |
 | `assets/js/ui.js` | DOM helpers: generated layer panel, legends, histogram, click panel, polygon area. |
 | `assets/styles.css` | All styling (responsive at 1100 px and 720 px). |
 | `data/layers.json` | **The manifest. Edit this to add, replace or remove layers.** |

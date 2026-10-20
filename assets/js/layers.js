@@ -3,7 +3,7 @@
    *layers* (how it is drawn), and keeps them in sync with the UI state:
    visibility, opacity, selected species, selected date and minimum score. */
 
-import { layerForSpecies, versionFor } from './manifest.js?v=20261016d';
+import { layerForSpecies, versionFor } from './manifest.js?v=20261020a';
 
 const PMTILES_JS = 'https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js';
 const ANCHOR_RASTERS = 'anchor-rasters';   // raster overlays are inserted below this
@@ -53,8 +53,8 @@ export class LayerManager {
   scored(l) { return l.type === 'geojson' && !!l.style.scoreField; }
   primaryLayer() {
     const ls = this.layersForSpecies();
-    return ls.find(l => l.role === 'primary' && this.isActive(l)) || ls.find(l => this.scored(l) && this.isActive(l))
-      || ls.find(l => l.role === 'primary') || ls.find(l => this.isActive(l)) || ls[0] || null;
+    return ls.find(l => this.scored(l) && this.isActive(l)) || ls.find(l => l.role === 'primary' && this.isActive(l))
+      || ls.find(l => this.isActive(l)) || ls.find(l => l.role === 'primary') || ls[0] || null;
   }
   passesScore(l, f) {
     if (!this.scored(l) || l.style.filterByScore === false) return true;

@@ -67,8 +67,14 @@ export function buildLayerPanel(container, mgr, { onToggle, onOpacity }) {
   if (!layers.length) { container.append(el('p', { class: 'control-note' }, 'No layers in data/layers.json for this species.')); return; }
   const groups = [...new Set(layers.map(l => l.group))];
   for (const g of groups) {
-    container.append(el('div', { class: 'layer-group-title' }, g));
-    for (const l of layers.filter(x => x.group === g)) {
+    const inGroup = layers.filter(x => x.group === g);
+    // Groups made only of synthetic layers are tucked into a closed <details> so real data comes first.
+    let target = container;
+    if (inGroup.every(l => l.status === 'synthetic')) {
+      const det = el('details', { class: 'demo-group' }, el('summary', { class: 'layer-group-title' }, g));
+      container.append(det); target = det;
+    } else container.append(el('div', { class: 'layer-group-title' }, g));
+    for (const l of inGroup) {
       const st = mgr.status(l.id);
       const inputId = `toggle-${l.id}`, opId = `opacity-${l.id}`;
       const pct = Math.round(st.opacity * 100);
@@ -86,7 +92,7 @@ export function buildLayerPanel(container, mgr, { onToggle, onOpacity }) {
           legendFor(l),
           l.description ? el('p', { class: 'control-note' }, l.description) : null,
           el('p', { class: 'layer-status', role: 'status' })));
-      container.append(row);
+      target.append(row);
     }
   }
 }

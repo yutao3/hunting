@@ -3,7 +3,7 @@
    *layers* (how it is drawn), and keeps them in sync with the UI state:
    visibility, opacity, selected species, selected date and minimum score. */
 
-import { layerForSpecies, versionFor } from './manifest.js?v=20261020a';
+import { layerForSpecies, versionFor } from './manifest.js?v=20261021a';
 
 const PMTILES_JS = 'https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js';
 const ANCHOR_RASTERS = 'anchor-rasters';   // raster overlays are inserted below this
@@ -16,6 +16,14 @@ export const rampExpression = (field, ramp, fallback = '#888') =>
   (Array.isArray(ramp) && ramp.length >= 2)
     ? ['interpolate', ['linear'], ['coalesce', ['to-number', ['get', field]], 0], ...ramp.flat()]
     : fallback;
+
+/** Rough centre of a geometry (mean of its outer-ring vertices); good enough for a map pin. */
+function centre(g) {
+  const ring = g?.type === 'Polygon' ? g.coordinates[0] : g?.type === 'MultiPolygon' ? g.coordinates[0][0] : g?.type === 'Point' ? [g.coordinates] : null;
+  if (!ring?.length) return null;
+  const pts = ring.length > 1 ? ring.slice(0, -1) : ring;
+  return [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length];
+}
 
 let pmtilesReady = null;
 function ensurePmtiles() {
@@ -72,7 +80,7 @@ export class LayerManager {
   }
   queryLayerIds() {
     return this.layersForSpecies().filter(l => this.isActive(l) && l.type === 'geojson')
-      .flatMap(l => [`lyr-${l.id}-fill`, `lyr-${l.id}-circle`]).filter(id => this.map.getLayer(id));
+      .flatMap(l => [`lyr-${l.id}-pin`, `lyr-${l.id}-fill`, `lyr-${l.id}-circle`]).filter(id => this.map.getLayer(id));
   }
 
   /* ---------- state changes ---------- */
@@ -109,7 +117,7 @@ export class LayerManager {
     }
   }
 
-  #mapLayerIds(l) { return isRaster(l) ? [`lyr-${l.id}-raster`] : [`lyr-${l.id}-fill`, `lyr-${l.id}-line`, `lyr-${l.id}-circle`]; }
+  #mapLayerIds(l) { return isRaster(l) ? [`lyr-${l.id}-raster`] : [`lyr-${l.id}-fill`, `lyr-${l.id}-line`, `lyr-${l.id}-circle`, `lyr-${l.id}-pin`]; }
 
   #setVisibility(l, on) {
     for (const id of this.#mapLayerIds(l)) if (this.map.getLayer(id)) this.map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
@@ -151,6 +159,16 @@ export class LayerManager {
       st.data = data;
       if (m.getSource(srcId)) m.getSource(srcId).setData(data);
       else { m.addSource(srcId, { type: 'geojson', data, attribution: l.attribution }); this.#addVectorLayers(l, srcId); }
+      // Small patches vanish when zoomed out: show one pin per patch below a zoom level.
+      if (l.style?.pinsBelowZoom) {
+        const pins = { type: 'FeatureCollection', features: data.features.map(f => ({ type: 'Feature', properties: f.properties, geometry: { type: 'Point', coordinates: centre(f.geometry) } })).filter(f => f.geometry.coordinates) };
+        if (m.getSource(`${srcId}-pins`)) m.getSource(`${srcId}-pins`).setData(pins);
+        else {
+          m.addSource(`${srcId}-pins`, { type: 'geojson', data: pins });
+          m.addLayer({ id: `lyr-${l.id}-pin`, type: 'circle', source: `${srcId}-pins`, maxzoom: l.style.pinsBelowZoom,
+            paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2.5, 9, 5, 11, 7], 'circle-stroke-width': 1.2, 'circle-stroke-color': '#ffffff' } }, ANCHOR_VECTORS);
+        }
+      }
       return;
     }
     if (l.type === 'raster-image') {
@@ -211,6 +229,7 @@ export class LayerManager {
     m.setPaintProperty(`lyr-${l.id}-line`, 'line-opacity', Math.min(1, o + 0.35));
     if (s.dashed) m.setPaintProperty(`lyr-${l.id}-line`, 'line-dasharray', [2, 1.5]);
     m.setPaintProperty(`lyr-${l.id}-circle`, 'circle-color', color);
+    if (m.getLayer(`lyr-${l.id}-pin`)) { m.setPaintProperty(`lyr-${l.id}-pin`, 'circle-color', color); m.setPaintProperty(`lyr-${l.id}-pin`, 'circle-opacity', Math.min(1, o + 0.3)); }
     m.setPaintProperty(`lyr-${l.id}-circle`, 'circle-opacity', Math.min(1, o + 0.3));
     const base = this.#baseFilters?.[l.id];
     if (base && this.scored(l) && s.filterByScore !== false) {
@@ -218,6 +237,7 @@ export class LayerManager {
       m.setFilter(fillId, ['all', base.polys, score]);
       m.setFilter(`lyr-${l.id}-line`, ['all', base.lines, score]);
       m.setFilter(`lyr-${l.id}-circle`, ['all', base.points, score]);
+      if (m.getLayer(`lyr-${l.id}-pin`)) m.setFilter(`lyr-${l.id}-pin`, score);
     }
   }
 }

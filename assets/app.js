@@ -1,11 +1,11 @@
 /* app.js — SAIIL Wildlife Habitat Explorer bootstrap.
    Wires together: manifest (data/layers.json) → LayerManager → MapLibre globe → UI panels.
    Static site: no backend, no tracking, no API keys. */
-import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261020a';
-import { loadManifest, allDates } from './js/manifest.js?v=20261020a';
-import { LayerManager } from './js/layers.js?v=20261020a';
-import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor } from './js/ui.js?v=20261020a';
-import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261020a';
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261021a';
+import { loadManifest, allDates } from './js/manifest.js?v=20261021a';
+import { LayerManager } from './js/layers.js?v=20261021a';
+import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261021a';
+import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261021a';
 
 const params = new URLSearchParams(location.search);
 const state = { map: null, mgr: null, manifest: null, spinner: null, projection: 'globe', basemap: 'satellite', popup: null, selected: null };
@@ -52,7 +52,7 @@ function onMapClick(e) {
   condPinned = e.lngLat; updateConditions(e.lngLat, 'Clicked spot');
   setTimeout(() => { condPinned = null; }, 30000);   // map centre takes over again after 30 s of panning
   if (!hit) { state.popup?.remove(); mgr.highlight(null); clearFeature(); return; }
-  const layerId = hit.layer.id.replace(/^lyr-/, '').replace(/-(fill|circle)$/, '');
+  const layerId = hit.layer.id.replace(/^lyr-/, '').replace(/-(fill|circle|pin)$/, '');
   const layer = mgr.get(layerId); const st = mgr.status(layerId);
   // Use the original GeoJSON feature (full-precision geometry) when available.
   const original = st.data?.features?.find(f => hit.properties.id !== undefined && f.properties?.id === hit.properties.id);
@@ -262,6 +262,58 @@ async function toggleDemo() {
   if (on && isPhone()) setTab('map');
 }
 
+/* ---------- My Revier: a private hunting-ground boundary (never leaves the browser) ---------- */
+const REVIER_KEY = 'saiil-revier';
+function revierBounds(gj) {
+  let w = 180, s = 90, e = -180, n = -90;
+  const walk = (c) => { if (typeof c?.[0] === 'number') { w = Math.min(w, c[0]); e = Math.max(e, c[0]); s = Math.min(s, c[1]); n = Math.max(n, c[1]); } else if (Array.isArray(c)) c.forEach(walk); };
+  for (const f of gj.features) walk(f.geometry?.coordinates);
+  return w <= e ? [w, s, e, n] : null;
+}
+function showRevier(gj, name, fly = true) {
+  const { map } = state; if (!map) return;
+  const polys = gj.features.filter(f => /Polygon/.test(f.geometry?.type || ''));
+  if (!polys.length) throw new Error('no polygon found');
+  const b = revierBounds({ features: polys });
+  if (!b || b[0] < -180 || b[2] > 180 || b[1] < -90 || b[3] > 90) throw new Error('coordinates are not longitude/latitude (EPSG:4326)');
+  const data = { type: 'FeatureCollection', features: polys };
+  if (map.getSource('my-revier')) map.getSource('my-revier').setData(data);
+  else {
+    map.addSource('my-revier', { type: 'geojson', data });
+    map.addLayer({ id: 'my-revier-fill', type: 'fill', source: 'my-revier', paint: { 'fill-color': '#ff7a00', 'fill-opacity': 0.06 } });
+    map.addLayer({ id: 'my-revier-line', type: 'line', source: 'my-revier', paint: { 'line-color': '#ff7a00', 'line-width': 3, 'line-dasharray': [2, 1] } });
+  }
+  const ha = polys.reduce((a, f) => a + (areaHa(f.geometry) || 0), 0);
+  state.revier = { bounds: b, name };
+  $('revier-info').hidden = false;
+  setText('revier-name', name);
+  setText('revier-area', ha >= 100 ? `${(ha / 100).toFixed(2)} km²` : `${ha.toFixed(1)} ha`);
+  if (fly) { state.spinner?.stop(); map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: panelPadding(), maxZoom: 15, duration: 2500 }); $('fly-btn').hidden = true; $('globe-btn').hidden = false; }
+  condPinned = { lat: (b[1] + b[3]) / 2, lng: (b[0] + b[2]) / 2 };
+  updateConditions(condPinned, 'My Revier');
+}
+async function loadRevierFile(file) {
+  try {
+    if (file.size > 5e6) throw new Error('file is larger than 5 MB');
+    const gj = JSON.parse(await file.text());
+    const fc = gj.type === 'FeatureCollection' ? gj : gj.type === 'Feature' ? { type: 'FeatureCollection', features: [gj] } : { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: gj }] };
+    const name = fc.features[0]?.properties?.name || file.name.replace(/\.(geo)?json$/i, '');
+    showRevier(fc, name);
+    try { localStorage.setItem(REVIER_KEY, JSON.stringify({ name, fc })); } catch { /* storage may be blocked: fine, it just won't be remembered */ }
+  } catch (e) { warn(`Could not load the Revier boundary: ${e.message}. Use a GeoJSON polygon in longitude/latitude (EPSG:4326).`); }
+  $('revier-file').value = '';
+}
+function clearRevier() {
+  const { map } = state;
+  for (const id of ['my-revier-line', 'my-revier-fill']) if (map?.getLayer(id)) map.removeLayer(id);
+  if (map?.getSource('my-revier')) map.removeSource('my-revier');
+  state.revier = null; condPinned = null; $('revier-info').hidden = true;
+  try { localStorage.removeItem(REVIER_KEY); } catch { /* ignore */ }
+}
+function restoreRevier() {
+  try { const saved = JSON.parse(localStorage.getItem(REVIER_KEY) || 'null'); if (saved?.fc) showRevier(saved.fc, saved.name, false); } catch { /* ignore */ }
+}
+
 /* ---------- panels, phone tabs, help ---------- */
 function setCollapsed(side, collapsed) {
   $('app').classList.toggle(`${side}-collapsed`, collapsed);
@@ -275,6 +327,9 @@ function setTab(tab) {
 /* ---------- static controls ---------- */
 function attachControls() {
   $('demo-toggle').addEventListener('click', toggleDemo);
+  $('revier-file').addEventListener('change', (e) => { const f = e.target.files?.[0]; if (f) loadRevierFile(f); });
+  $('revier-zoom').addEventListener('click', () => { const b = state.revier?.bounds; if (b && state.map) { state.spinner?.stop(); state.map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: panelPadding(), maxZoom: 15, duration: 1800 }); } });
+  $('revier-clear').addEventListener('click', clearRevier);
   document.querySelectorAll('[data-collapse]').forEach(b => b.addEventListener('click', () => setCollapsed(b.dataset.collapse, true)));
   $('open-left').addEventListener('click', () => setCollapsed('left', false));
   $('open-right').addEventListener('click', () => setCollapsed('right', false));
@@ -321,7 +376,8 @@ async function start() {
   renderSpecies(); renderDates(); buildPanel(); clearFeature();
   await state.mgr.apply();
   loading(false);
-  scheduleConditions(true);
+  restoreRevier();
+  if (!state.revier) scheduleConditions(true);
   if (params.has('autofly')) setTimeout(() => flyToPilot(), 2500);
 }
 window.__explorer = state;   // handy for debugging in the browser console

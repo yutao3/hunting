@@ -49,6 +49,11 @@ function symbolStyle(layer) {
 /* ---------- legend ---------- */
 export function legendFor(layer) {
   const s = layer.style || {};
+  // Categorical layers served by a map server (WMS) bring their own legend picture.
+  if (s.legendImage) {
+    return el('details', { class: 'legend legend-image' }, el('summary', {}, `Legend: ${s.legendLabel || layer.title}`),
+      el('img', { src: s.legendImage, alt: `Legend for ${layer.title}`, loading: 'lazy' }));
+  }
   if (Array.isArray(s.ramp) && s.ramp.length > 1) {
     const lo = s.min ?? s.ramp[0][0], hi = s.max ?? s.ramp[s.ramp.length - 1][0];
     const mid = Math.round(((lo + hi) / 2) * 100) / 100;
@@ -169,12 +174,27 @@ export function renderFeature({ props, geometry, layer, version, lngLat, synthet
   setText('feature-type', layer.title);
   $('feature-caption').textContent = props.note || layer.description || '';
   const rows = [];
+  // "Why this score" (study 7.5): each indicator's value and its weighted contribution.
+  if (Array.isArray(s.explain) && score !== undefined) {
+    const parts = s.explain.filter(x => props[x.field] !== undefined)
+      .map(x => ({ ...x, value: Number(props[x.field]), pts: x.weight * Number(props[x.field]) }))
+      .sort((a, b) => b.pts - a.pts);
+    rows.push(el('div', { class: 'explain' },
+      el('div', { class: 'explain-head' }, el('span', {}, 'Why this score'), el('span', {}, 'value · weight → points')),
+      ...parts.map(x => el('div', { class: 'explain-row', title: `${x.label}: ${x.value}/100 × weight ${x.weight} = ${x.pts.toFixed(1)} points` },
+        el('span', { class: 'explain-label' }, x.label),
+        el('span', { class: 'explain-bar' }, el('i', { style: `width:${x.value}%;background:${rampColor(s.ramp, x.value)}` })),
+        el('span', { class: 'explain-num' }, `${x.value} · ${x.weight} → ${x.pts.toFixed(0)}`))),
+      el('div', { class: 'explain-total' }, el('span', {}, 'Total'), el('b', {}, `${Math.round(parts.reduce((a, x) => a + x.pts, 0))} / 100`)),
+      props.change ? el('p', { class: 'explain-change' }, el('b', {}, 'Observed change: '), props.change) : null,
+      el('p', { class: 'control-note' }, 'A relative habitat score, not a probability of seeing an animal.')));
+  }
   const add = (k, v, extra) => rows.push(el('div', { class: 'attribute' }, el('span', {}, k), el('b', {}, extra || null, String(v))));
   if (score !== undefined) add('Habitat score', `${score} / ${s.max ?? 100}`, el('i', { class: 'chip', style: `background:${rampColor(s.ramp, Number(score))}` }));
   const ha = areaHa(geometry);
   if (ha) add('Area', ha >= 100 ? `${(ha / 100).toFixed(2)} km²` : `${ha.toFixed(1)} ha`);
   add('Dataset date', formatDate(props.date || props.detected || version?.date));
-  const skip = new Set(['name', 'note', 'id', 'synthetic', 'date', 'detected', s.scoreField]);
+  const skip = new Set(['name', 'note', 'id', 'synthetic', 'date', 'detected', 'change', s.scoreField, ...(s.explain || []).map(x => x.field)]);
   for (const [k, v] of Object.entries(props)) if (!skip.has(k) && v !== null && v !== undefined && typeof v !== 'object') add(nice(k), v);
   add('Source', version?.source || layer.source || '—');
   add('Data status', synthetic ? 'SYNTHETIC (fabricated)' : (layer.status || 'unspecified'));

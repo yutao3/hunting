@@ -276,3 +276,31 @@ i.chip { width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; verti
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* ---------- explainable score ("Why this score") ---------- */
+.explain { border: 1px solid #e3ebe6; border-radius: 10px; padding: 10px; margin-bottom: 6px; background: #fbfdfb; display: grid; gap: 6px; }
+.explain-head, .explain-total { display: flex; justify-content: space-between; font-size: 10px; color: #6f8379; font-weight: 750; letter-spacing: .03em; }
+.explain-total { border-top: 1px solid #e3ebe6; padding-top: 6px; font-size: 11px; color: #2c4a3e; }
+.explain-row { display: grid; grid-template-columns: minmax(0, 1fr) 58px auto; gap: 6px; align-items: center; font-size: 10.5px; }
+.explain-label { color: #3c5a4e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.explain-bar { height: 7px; background: #e9efeb; border-radius: 4px; overflow: hidden; }
+.explain-bar i { display: block; height: 100%; border-radius: 4px; }
+.explain-num { font-variant-numeric: tabular-nums; color: #2c4a3e; font-weight: 700; font-size: 10px; white-space: nowrap; }
+.explain-change { font-size: 11px; line-height: 1.5; color: #1d5a3c; background: #eaf6ef; border-radius: 7px; padding: 6px 8px; margin: 2px 0 0; }
+.explain .control-note { margin: 0; }
+
+/* ---------- legend images (WMS layers) ---------- */
+.legend-image summary { font-size: 10.5px; color: #4f6a5d; cursor: pointer; font-weight: 700; }
+.legend-image img { display: block; max-width: 100%; margin-top: 6px; border-radius: 6px; background: #fff; }
+
+/* ---------- My Revier + legal ---------- */
+.revier-box { border: 1px solid #f3d3b3; background: #fff8f1; border-radius: 11px; padding: 12px; }
+.file-btn { display: block; text-align: center; position: relative; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.file-btn:focus-within { outline: 3px solid #80bdf4; outline-offset: 2px; }
+.revier-info { margin-top: 10px; }
+.revier-info[hidden] { display: none; }
+.revier-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.revier-actions .action { margin-top: 6px; padding: 8px 4px; }
+.legal-note { font-size: 10.5px; line-height: 1.5; color: #7a4b16; margin: 10px 0 0; }
+.tag-layer { background: #eef3fb; color: #2d5487; margin-left: auto; margin-right: 6px; }

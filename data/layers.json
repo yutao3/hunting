@@ -115,7 +115,7 @@
       "id": "ndvi-modis",
       "title": "Vegetation greenness NDVI (latest 8-day)",
       "type": "xyz-tiles",
-      "group": "Habitat indicators (real EO)",
+      "group": "Habitat indicators: Europe (real)",
       "visibleByDefault": true,
       "realtime": true,
       "lagDays": 0,
@@ -156,6 +156,250 @@
       }
     },
     {
+      "id": "copernicus-tcd",
+      "title": "Tree cover density (Europe)",
+      "type": "xyz-tiles",
+      "group": "Habitat indicators: Europe (real)",
+      "visibleByDefault": false,
+      "date": "2018-12-31",
+      "url": "https://image.discomap.eea.europa.eu/arcgis/services/GioLandPublic/HRL_TreeCoverDensity_2018/ImageServer/WMSServer?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&LAYERS=HRL_TreeCoverDensity_2018&BBOX={bbox-epsg-3857}",
+      "description": "Percentage of tree cover per pixel across Europe (Copernicus High Resolution Layer, 2018). Works outside Germany too.",
+      "source": "Copernicus Land Monitoring Service (EEA)",
+      "status": "real",
+      "resolution": "10 m (2018)",
+      "attribution": "Tree cover density: Copernicus Land Monitoring Service, EEA",
+      "style": {
+        "opacity": 0.7,
+        "minzoom": 5,
+        "maxzoom": 18,
+        "min": 0,
+        "max": 100,
+        "ramp": [
+          [
+            0,
+            "#f7fcb9"
+          ],
+          [
+            50,
+            "#78c679"
+          ],
+          [
+            100,
+            "#004529"
+          ]
+        ],
+        "legendLabel": "Tree cover %"
+      }
+    },
+    {
+      "id": "dlr-croptypes",
+      "title": "Crop types (21 classes)",
+      "type": "xyz-tiles",
+      "group": "Habitat indicators: Germany (real, 10 m)",
+      "visibleByDefault": false,
+      "bounds": [
+        5.8,
+        47.2,
+        15.1,
+        55.1
+      ],
+      "description": "Which crop grows in each field (maize, wheat, rapeseed, grassland...), mapped from Sentinel-1 and Sentinel-2. Food for wild boar and deer. Germany only; zoom in to see fields.",
+      "source": "DLR CropTypes Germany (Sentinel-1 + Sentinel-2)",
+      "status": "real",
+      "resolution": "10 m, yearly",
+      "attribution": "© DLR (German Aerospace Center), CC BY 4.0",
+      "style": {
+        "opacity": 0.75,
+        "minzoom": 6,
+        "maxzoom": 18,
+        "legendImage": "https://geoservice.dlr.de/eoc/land/wms?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CROPTYPES_DE_P1Y_V02",
+        "legendLabel": "Crop type",
+        "color": "#e3b448"
+      },
+      "versions": [
+        {
+          "date": "2024-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2024-03-01T00:00:00Z",
+          "description": "Crop types 2024"
+        },
+        {
+          "date": "2023-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2023-03-01T00:00:00Z",
+          "description": "Crop types 2023"
+        },
+        {
+          "date": "2022-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2022-03-01T00:00:00Z",
+          "description": "Crop types 2022"
+        },
+        {
+          "date": "2021-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2021-03-01T00:00:00Z",
+          "description": "Crop types 2021"
+        },
+        {
+          "date": "2020-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2020-03-01T00:00:00Z",
+          "description": "Crop types 2020"
+        },
+        {
+          "date": "2019-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2019-03-01T00:00:00Z",
+          "description": "Crop types 2019"
+        },
+        {
+          "date": "2018-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2018-03-01T00:00:00Z",
+          "description": "Crop types 2018"
+        },
+        {
+          "date": "2017-10-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=CROPTYPES_DE_P1Y_V02&TIME=2017-03-01T00:00:00Z",
+          "description": "Crop types 2017"
+        }
+      ]
+    },
+    {
+      "id": "dlr-canopy-cover",
+      "title": "Forest canopy cover",
+      "type": "xyz-tiles",
+      "group": "Habitat indicators: Germany (real, 10 m)",
+      "visibleByDefault": false,
+      "bounds": [
+        5.8,
+        47.2,
+        15.1,
+        55.1
+      ],
+      "description": "How much of the ground is covered by tree crowns (%). Shelter and shade. Modelled from GEDI lidar + Sentinel-1/2. Germany only.",
+      "source": "DLR Forest Structure Germany",
+      "status": "real",
+      "resolution": "10 m, yearly",
+      "attribution": "© DLR (German Aerospace Center), CC BY 4.0",
+      "style": {
+        "opacity": 0.75,
+        "minzoom": 6,
+        "maxzoom": 18,
+        "legendImage": "https://geoservice.dlr.de/eoc/land/wms?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=FOREST_STRUCTURE_DE_COVER_P1Y",
+        "legendLabel": "Canopy cover",
+        "color": "#2e7d32"
+      },
+      "versions": [
+        {
+          "date": "2023-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2023-01-01T00:00:00Z"
+        },
+        {
+          "date": "2022-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2022-01-01T00:00:00Z"
+        },
+        {
+          "date": "2021-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2021-01-01T00:00:00Z"
+        },
+        {
+          "date": "2020-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2020-01-01T00:00:00Z"
+        },
+        {
+          "date": "2019-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2019-01-01T00:00:00Z"
+        },
+        {
+          "date": "2018-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2018-01-01T00:00:00Z"
+        },
+        {
+          "date": "2017-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_COVER_P1Y&TIME=2017-01-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "dlr-canopy-height",
+      "title": "Forest canopy height",
+      "type": "xyz-tiles",
+      "group": "Habitat indicators: Germany (real, 10 m)",
+      "visibleByDefault": false,
+      "bounds": [
+        5.8,
+        47.2,
+        15.1,
+        55.1
+      ],
+      "description": "Tree height (m): tall = mature forest, low = young or regrowing forest. Germany only.",
+      "source": "DLR Forest Structure Germany",
+      "status": "real",
+      "resolution": "10 m, yearly",
+      "attribution": "© DLR (German Aerospace Center), CC BY 4.0",
+      "style": {
+        "opacity": 0.75,
+        "minzoom": 6,
+        "maxzoom": 18,
+        "legendImage": "https://geoservice.dlr.de/eoc/land/wms?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=FOREST_STRUCTURE_DE_RH95_P1Y",
+        "legendLabel": "Canopy height",
+        "color": "#6d4c41"
+      },
+      "versions": [
+        {
+          "date": "2023-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2023-01-01T00:00:00Z"
+        },
+        {
+          "date": "2022-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2022-01-01T00:00:00Z"
+        },
+        {
+          "date": "2021-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2021-01-01T00:00:00Z"
+        },
+        {
+          "date": "2020-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2020-01-01T00:00:00Z"
+        },
+        {
+          "date": "2019-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2019-01-01T00:00:00Z"
+        },
+        {
+          "date": "2018-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2018-01-01T00:00:00Z"
+        },
+        {
+          "date": "2017-12-31",
+          "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=FOREST_STRUCTURE_DE_RH95_P1Y&TIME=2017-01-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "dlr-canopy-loss",
+      "title": "Forest clearings & canopy loss (2018-2021)",
+      "type": "xyz-tiles",
+      "group": "Habitat indicators: Germany (real, 10 m)",
+      "visibleByDefault": false,
+      "bounds": [
+        5.8,
+        47.2,
+        15.1,
+        55.1
+      ],
+      "date": "2021-04-30",
+      "url": "https://geoservice.dlr.de/eoc/land/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&STYLES=&BBOX={bbox-epsg-3857}&LAYERS=TREE_CANOPY_COVER_LOSS_P1M",
+      "description": "Where trees were lost (storms, drought, bark beetle, harvest) from Jan 2018 to Apr 2021. Clearings grow fresh food deer like (Nature Ecol. Evol. 2026). Germany only.",
+      "source": "DLR Tree Canopy Cover Loss Germany",
+      "status": "real",
+      "resolution": "10 m, monthly 2018-2021",
+      "attribution": "© DLR (German Aerospace Center), CC BY 4.0",
+      "style": {
+        "opacity": 0.85,
+        "minzoom": 6,
+        "maxzoom": 18,
+        "legendImage": "https://geoservice.dlr.de/eoc/land/wms?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=TREE_CANOPY_COVER_LOSS_P1M",
+        "legendLabel": "Canopy loss",
+        "color": "#e64a19"
+      }
+    },
+    {
       "id": "protected-areas",
       "title": "Protected areas (WDPA)",
       "type": "xyz-tiles",
@@ -177,12 +421,12 @@
     },
     {
       "id": "habitat-polygons-roe-deer",
-      "title": "Habitat score polygons · synthetic",
+      "title": "Habitat score patches · synthetic",
       "type": "geojson",
       "group": "Demo habitat model (synthetic)",
       "species": "roe_deer",
       "visibleByDefault": false,
-      "description": "Candidate roe deer habitat patches coloured by habitat score (0-100). SYNTHETIC.",
+      "description": "Small habitat patches (about 200-400 m) scored 0-100 from weighted indicators. Click one to see why it scored as it did. SYNTHETIC demo until SAIIL Sentinel-2 analytics.",
       "source": "SAIIL synthetic demo fixture (no EO input)",
       "status": "synthetic",
       "resolution": "Demonstration only",
@@ -215,7 +459,45 @@
         "opacity": 0.6,
         "outlineColor": "#f2fff6",
         "outlineWidth": 1.3,
-        "filterByScore": true
+        "filterByScore": true,
+        "explain": [
+          {
+            "field": "s_mosaic",
+            "label": "Forest-field edge (mosaic)",
+            "weight": 0.25
+          },
+          {
+            "field": "s_clearing",
+            "label": "Recent clearing with regrowth",
+            "weight": 0.2
+          },
+          {
+            "field": "s_greenness",
+            "label": "Greenness vs normal",
+            "weight": 0.15
+          },
+          {
+            "field": "s_cover",
+            "label": "Canopy cover (shelter, shade)",
+            "weight": 0.15
+          },
+          {
+            "field": "s_quiet",
+            "label": "Quietness (far from roads, paths)",
+            "weight": 0.1
+          },
+          {
+            "field": "s_moisture",
+            "label": "Vegetation moisture",
+            "weight": 0.1
+          },
+          {
+            "field": "s_water",
+            "label": "Water nearby",
+            "weight": 0.05
+          }
+        ],
+        "pinsBelowZoom": 11.5
       },
       "versions": [
         {
@@ -294,12 +576,12 @@
     },
     {
       "id": "habitat-polygons-wild-boar",
-      "title": "Habitat score polygons · synthetic",
+      "title": "Habitat score patches · synthetic",
       "type": "geojson",
       "group": "Demo habitat model (synthetic)",
       "species": "wild_boar",
       "visibleByDefault": false,
-      "description": "Candidate wild boar habitat patches coloured by habitat score (0-100). SYNTHETIC.",
+      "description": "Small habitat patches (about 200-400 m) scored 0-100 from weighted indicators. Click one to see why it scored as it did. SYNTHETIC demo until SAIIL Sentinel-2 analytics.",
       "source": "SAIIL synthetic demo fixture (no EO input)",
       "status": "synthetic",
       "resolution": "Demonstration only",
@@ -332,7 +614,40 @@
         "opacity": 0.6,
         "outlineColor": "#f2fff6",
         "outlineWidth": 1.3,
-        "filterByScore": true
+        "filterByScore": true,
+        "explain": [
+          {
+            "field": "s_crop",
+            "label": "Crop-forest interface (maize not harvested)",
+            "weight": 0.3
+          },
+          {
+            "field": "s_cover",
+            "label": "Canopy cover (resting cover)",
+            "weight": 0.2
+          },
+          {
+            "field": "s_wet",
+            "label": "Wet ground and water (wallowing)",
+            "weight": 0.15
+          },
+          {
+            "field": "s_quiet",
+            "label": "Quietness (far from roads, paths)",
+            "weight": 0.15
+          },
+          {
+            "field": "s_broadleaf",
+            "label": "Broadleaf forest (acorns, beech nuts)",
+            "weight": 0.1
+          },
+          {
+            "field": "s_greenness",
+            "label": "Greenness vs normal",
+            "weight": 0.1
+          }
+        ],
+        "pinsBelowZoom": 11.5
       },
       "versions": [
         {
@@ -408,147 +723,6 @@
           "url": "layers/habitat_heatmap_wild_boar_2026-08.png"
         }
       ]
-    },
-    {
-      "id": "landscape-change",
-      "title": "Forest clearings & change · synthetic",
-      "type": "geojson",
-      "group": "Demo habitat model (synthetic)",
-      "visibleByDefault": false,
-      "description": "Example change polygons (clearing, windthrow, harvest). SYNTHETIC.",
-      "source": "SAIIL synthetic demo fixture (no EO input)",
-      "status": "synthetic",
-      "style": {
-        "color": "#f39c34",
-        "opacity": 0.35,
-        "outlineColor": "#b8641a",
-        "outlineWidth": 1.6,
-        "dashed": true
-      },
-      "versions": [
-        {
-          "date": "2026-10-11",
-          "url": "layers/landscape_change_2026-10.geojson"
-        },
-        {
-          "date": "2026-09-27",
-          "url": "layers/landscape_change_2026-09.geojson"
-        }
-      ]
-    },
-    {
-      "id": "vegetation-vigour",
-      "title": "Vegetation vigour (NDVI-like) · synthetic",
-      "type": "raster-image",
-      "group": "Demo habitat model (synthetic)",
-      "visibleByDefault": false,
-      "bounds": [
-        7.55,
-        47.67,
-        8.85,
-        48.56
-      ],
-      "description": "Illustrative vegetation index surface. SYNTHETIC.",
-      "source": "SAIIL synthetic demo fixture (no EO input)",
-      "status": "synthetic",
-      "style": {
-        "opacity": 0.7,
-        "min": 0,
-        "max": 1,
-        "ramp": [
-          [
-            0.0,
-            "#a6611a"
-          ],
-          [
-            0.35,
-            "#dfc27d"
-          ],
-          [
-            0.6,
-            "#a6d96a"
-          ],
-          [
-            0.8,
-            "#1a9641"
-          ],
-          [
-            1.0,
-            "#00441b"
-          ]
-        ],
-        "legendLabel": "Index"
-      },
-      "versions": [
-        {
-          "date": "2026-10-11",
-          "url": "layers/vegetation_vigour_2026-10.png"
-        },
-        {
-          "date": "2026-09-27",
-          "url": "layers/vegetation_vigour_2026-09.png"
-        }
-      ]
-    },
-    {
-      "id": "moisture-index",
-      "title": "Moisture index (NDMI-like) · synthetic",
-      "type": "raster-image",
-      "group": "Demo habitat model (synthetic)",
-      "visibleByDefault": false,
-      "bounds": [
-        7.55,
-        47.67,
-        8.85,
-        48.56
-      ],
-      "date": "2026-10-11",
-      "url": "layers/moisture_index_2026-10.png",
-      "description": "Illustrative canopy/soil moisture surface. SYNTHETIC.",
-      "source": "SAIIL synthetic demo fixture (no EO input)",
-      "status": "synthetic",
-      "style": {
-        "opacity": 0.7,
-        "min": -1,
-        "max": 1,
-        "ramp": [
-          [
-            -1.0,
-            "#fff7bc"
-          ],
-          [
-            -0.19999999999999996,
-            "#7fcdbb"
-          ],
-          [
-            0.3999999999999999,
-            "#2c7fb8"
-          ],
-          [
-            1.0,
-            "#081d58"
-          ]
-        ],
-        "legendLabel": "Index"
-      }
-    },
-    {
-      "id": "water-bodies",
-      "title": "Water bodies · synthetic",
-      "type": "geojson",
-      "group": "Demo habitat model (synthetic)",
-      "visibleByDefault": false,
-      "date": "2026-10-11",
-      "url": "layers/water_bodies_2026-10.geojson",
-      "description": "Example open-water polygons. SYNTHETIC.",
-      "source": "SAIIL synthetic demo fixture (no EO input)",
-      "status": "synthetic",
-      "style": {
-        "color": "#2b8cff",
-        "opacity": 0.55,
-        "outlineColor": "#0b4f9c",
-        "outlineWidth": 1
-      }
     }
   ]
 }

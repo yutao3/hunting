@@ -10,9 +10,9 @@
   <title>Wildlife Habitat Explorer · SAIIL</title>
   <!-- MapLibre GL JS 5.24.0 (pinned). app.js retries from jsDelivr if unpkg is unreachable. -->
   <link id="maplibre-css" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link href="./assets/styles.css?v=20261020a" rel="stylesheet">
+  <link href="./assets/styles.css?v=20261021a" rel="stylesheet">
   <script defer src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-  <script type="module" src="./assets/app.js?v=20261020a"></script>
+  <script type="module" src="./assets/app.js?v=20261021a"></script>
 </head>
 <body>
 <div class="app" id="app" data-tab="map">
@@ -75,6 +75,14 @@
         </div>
       </div>
 
+      <div class="control-group revier-box">
+        <div class="control-label"><label for="revier-file">My hunting ground (Revier)</label><span class="tag">private</span></div>
+        <p class="control-note">Load your Revier boundary as GeoJSON (longitude/latitude). It stays in this browser and is never uploaded.</p>
+        <label class="action secondary file-btn"><input type="file" id="revier-file" accept=".geojson,.json,application/geo+json,application/json"><span aria-hidden="true">⤒</span> Load Revier boundary</label>
+        <div class="revier-info" id="revier-info" hidden><div class="attribute"><span id="revier-name">My Revier</span><b id="revier-area">—</b></div><div class="revier-actions"><button type="button" class="action secondary" id="revier-zoom">Zoom to Revier</button><button type="button" class="action secondary" id="revier-clear">Remove</button></div></div>
+        <p class="legal-note"><b>Good habitat is not permission to hunt.</b> In Germany you may hunt only in a Revier you are authorised for, and only in the open season (Jagdzeit) of your federal state.</p>
+      </div>
+
       <div class="control-group"><div class="control-label"><label for="snapshot-select">Dataset date</label><span class="tag" id="archive-tag">Archive</span></div><select id="snapshot-select" class="select"></select><p id="dataset-description" class="control-note">Pick an older date to see archived outputs (e.g. Sentinel-2 from earlier years).</p></div>
 
       <div class="control-group"><div class="control-label"><label>Map layers</label><span class="tag">from layers.json</span></div>
@@ -90,20 +98,20 @@
     <aside class="panel right-panel" id="panel-insights" aria-label="Live conditions and insights">
       <div class="panel-heading"><div><div class="section-caption">ANALYTICS</div><h2>Conditions &amp; insights</h2></div><button type="button" class="collapse-btn" data-collapse="right" aria-label="Hide insights panel">▸</button></div>
 
-      <section class="conditions-card" aria-labelledby="cond-title" aria-live="polite"><div class="control-label"><label id="cond-title">Live hunting conditions</label><span class="tag live-tag"><span class="live-dot"></span> LIVE</span></div><p class="control-note cond-where" id="cond-where">Pan the map or click a spot for real-time wind, weather and light.</p><div id="conditions"><p class="control-note">Loading…</p></div></section>
+      <section class="conditions-card" aria-labelledby="cond-title" aria-live="polite"><div class="control-label"><label id="cond-title">Live hunting conditions</label><span class="tag tag-layer" title="Layer C: will animals be active and detectable on this visit?">Layer C · activity</span><span class="tag live-tag"><span class="live-dot"></span> LIVE</span></div><p class="control-note cond-where" id="cond-where">Pan the map or click a spot for real-time wind, weather and light.</p><div id="conditions"><p class="control-note">Loading…</p></div></section>
 
       <div class="divider"></div>
       <div class="feature-card" id="feature-card"><div class="control-label"><label>Selected area</label><span id="feature-type" class="tag">Map detail</span></div><h3 id="feature-name">Select a polygon</h3><p id="feature-caption">Click a polygon on the map to see its details.</p><div id="feature-attributes" class="feature-attributes"><div class="empty-selection">No location selected</div></div></div>
 
       <div class="divider"></div>
       <div class="score-section" id="score-section">
-        <div class="insight-highlight"><span class="insight-label">HABITAT SCORE SELECTION</span><strong id="insight-count">—</strong><span id="insight-sub">habitat polygons at or above threshold</span><div class="mini-track"><span id="mini-track-fill"></span></div></div>
+        <div class="insight-highlight"><span class="insight-label">LAYER A · HABITAT SCORE SELECTION</span><strong id="insight-count">—</strong><span id="insight-sub">habitat polygons at or above threshold</span><div class="mini-track"><span id="mini-track-fill"></span></div></div>
         <div class="distribution"><div class="control-label"><label>Score distribution</label><span class="tag">visible polygons</span></div><div id="distribution-bars" class="distribution-bars"></div></div>
       </div>
 
       <div class="divider"></div>
       <div class="metadata-card"><div class="control-label"><label>Product provenance</label></div><dl><dt>Layer</dt><dd id="meta-layer">—</dd><dt>Dataset date</dt><dd id="meta-date">—</dd><dt>Status</dt><dd id="meta-status">—</dd><dt>Resolution</dt><dd id="meta-resolution">—</dd><dt>Coverage</dt><dd id="meta-coverage">—</dd><dt>Source</dt><dd id="meta-source">—</dd></dl><p class="control-note" id="meta-description"></p></div>
-      <div class="info-note"><span>ⓘ</span><p><b>Real data:</b> Sentinel-2 (EOX), NASA VIIRS &amp; MODIS NDVI, protected areas (WDPA), live weather (Open-Meteo). <b>Demo only:</b> the habitat score model. Not a hunting recommendation; always follow local law.</p></div>
+      <div class="info-note"><span>ⓘ</span><p><b>Real data:</b> Sentinel-2 (EOX), NASA VIIRS &amp; MODIS NDVI, DLR crop types &amp; forest structure, Copernicus tree cover, protected areas (WDPA), live weather (Open-Meteo). <b>Demo only:</b> the habitat score model. Not a hunting recommendation; always follow local law.</p></div>
       <p class="footer-links">© 2026 Surrey AI Imaging Ltd · <a href="./docs/data-guide.html">Data guide</a> · <a href="./data/layers.json" target="_blank" rel="noopener">layers.json</a></p>
     </aside>
   </main>
@@ -125,19 +133,30 @@
     <li><b>Start on the globe.</b> It spins until you touch it. Press <b>✈ Fly to Black Forest pilot</b> to zoom into the pilot region.</li>
     <li><b>Switch layers on in "Layers &amp; filters"</b> (left). Each layer has a toggle, an opacity slider and a legend. Layers marked <span class="real-tag">REAL</span> are satellite or official data; <span class="syn-tag">DEMO</span> layers are fabricated placeholders.</li>
     <li><b>Read the live conditions</b> (right). Wind, temperature, rain, sunrise/sunset, legal daylight window and moon phase are for the map centre. <b>Click any spot</b> to get conditions there. The green advice box tells you where to stand so your scent drifts away from game.</li>
-    <li><b>Preview the habitat score</b> with <b>▶ Preview habitat score model</b>. Polygons are coloured by score (yellow = low, dark green = high). Use the slider to hide weak areas, read the histogram, and click a polygon for score, area and indicators.</li>
-    <li><b>Go back in time</b> with "Dataset date", for example Sentinel-2 imagery from 2016 to 2024.</li>
+    <li><b>Preview the habitat score</b> with <b>▶ Preview habitat score model</b>. Small patches are coloured by score (yellow = low, dark green = high); zoomed out they show as dots. Use the slider to hide weak patches and click one: <b>"Why this score"</b> shows each indicator's value, its weight and the points it adds.</li>
+    <li><b>Go back in time</b> with "Dataset date", for example Sentinel-2 imagery from 2016 to 2024 or crop maps from 2017 to 2024.</li>
+    <li><b>Load your own Revier</b> (left panel) as a GeoJSON file to outline your hunting ground and get conditions there. It never leaves your browser.</li>
     <li><b>Export</b> the visible polygons as GeoJSON, or <b>Copy view</b> to share coordinates.</li>
   </ol>
+  <h3>Three different questions</h3>
+  <dl class="help-defs">
+    <dt>Layer A · habitat</dt><dd>Is this a good place for the species? Satellite indicators, weeks to seasons. (The habitat score.)</dd>
+    <dt>Layer B · use</dt><dd>Is the species using it now? Needs sightings and camera data, coming with partner hunting grounds.</dd>
+    <dt>Layer C · activity</dt><dd>Will I see one on this visit? Wind, weather, light, time of day. (The live conditions.)</dd>
+  </dl>
   <h3>What each layer means</h3>
   <dl class="help-defs">
     <dt>Sentinel-2 true colour</dt><dd>Real 10 m satellite mosaic (cloud-free, one per year). The base for SAIIL analytics.</dd>
     <dt>Vegetation greenness (NDVI)</dt><dd>How green and productive vegetation is now (NASA MODIS, 8-day). Greener means more food and cover.</dd>
     <dt>Yesterday's satellite view</dt><dd>NASA VIIRS daily image, showing current cloud and snow.</dd>
+    <dt>Crop types (DLR)</dt><dd>Which crop grows in each field, 2017 to 2024. Maize and cereals attract wild boar.</dd>
+    <dt>Canopy cover and height (DLR)</dt><dd>How closed and how tall the forest is: shelter, shade, young vs mature forest.</dd>
+    <dt>Clearings &amp; canopy loss (DLR)</dt><dd>Where trees were lost 2018 to 2021. Clearings regrow fresh food that deer seek.</dd>
+    <dt>Tree cover density (Copernicus)</dt><dd>Percentage of tree cover across Europe.</dd>
     <dt>Protected areas</dt><dd>Reserves, national parks and Natura 2000 sites, where hunting may be restricted.</dd>
     <dt>Habitat score (demo)</dt><dd>Will combine vegetation, moisture, forest structure, clearings, farmland and water into one 0–100 score per area. Coming from SAIIL's Sentinel-2 processing.</dd>
   </dl>
-  <p class="control-note">Scores are relative indices, not animal sighting probabilities. Always follow local hunting law.</p>
+  <p class="control-note">Scores are relative habitat indices, not probabilities of seeing an animal. Good habitat is not permission to hunt: hunt only in your authorised Revier and in the open season. Satellites cannot see the animals themselves.</p>
 </dialog>
 
 <noscript><div class="no-script">Enable JavaScript to use the interactive map.</div></noscript>

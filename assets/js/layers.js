@@ -3,13 +3,13 @@
    *layers* (how it is drawn), and keeps them in sync with the UI state:
    visibility, opacity, selected species, selected date and minimum score. */
 
-import { layerForSpecies, versionFor } from './manifest.js?v=20261028a';
+import { layerForSpecies, versionFor } from './manifest.js?v=20261028b';
 
 const PMTILES_JS = 'https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js';
 const ANCHOR_RASTERS = 'anchor-rasters';   // raster overlays are inserted below this
 const ANCHOR_VECTORS = 'anchor-vectors';   // vector overlays are inserted below this
 const HIGHLIGHT = 'selection-highlight';
-const RASTER_TYPES = ['raster-image', 'xyz-tiles'];
+const RASTER_TYPES = ['raster-image', 'xyz-tiles', 's2-scene'];
 
 const isRaster = (l) => RASTER_TYPES.includes(l.type) || (l.type === 'pmtiles' && (l.style?.kind || 'raster') === 'raster');
 export const rampExpression = (field, ramp, fallback = '#888') =>
@@ -23,6 +23,34 @@ function centre(g) {
   if (!ring?.length) return null;
   const pts = ring.length > 1 ? ring.slice(0, -1) : ring;
   return [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length];
+}
+
+/* ---- Sentinel-2 single-date scenes, rendered on the fly by Microsoft Planetary Computer (free, no key) ----
+   A "mosaic" of all Sentinel-2 L2A tiles of one day is registered once per date (ids expire after ~1 day),
+   then the tile server renders true colour, NDVI or the scene classification for that date. */
+const PC = 'https://planetarycomputer.microsoft.com/api/data/v1';
+const S2_AREA = [[[5.8, 47.2], [15.1, 47.2], [15.1, 55.1], [5.8, 55.1], [5.8, 47.2]]];   // Germany box
+const pcMosaics = new Map();   // date -> {t, promise}
+function registerScene(date) {
+  const hit = pcMosaics.get(date);
+  if (hit && Date.now() - hit.t < 12 * 3600e3) return hit.promise;
+  const promise = fetch(`${PC}/mosaic/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ collections: ['sentinel-2-l2a'], 'filter-lang': 'cql2-json', filter: { op: 'and', args: [
+      { op: 's_intersects', args: [{ property: 'geometry' }, { type: 'Polygon', coordinates: S2_AREA }] },
+      { op: 'anyinteracts', args: [{ property: 'datetime' }, { interval: [`${date}T00:00:00Z`, `${date}T23:59:59Z`] }] }] } }) })
+    .then(r => { if (!r.ok) throw new Error(`scene search HTTP ${r.status}`); return r.json(); })
+    .then(j => { const href = (j.links || []).find(x => x.rel === 'tilejson' || x.rel === 'metadata')?.href || ''; const id = href.split('/mosaic/')[1]?.split('/')[0]; if (!id) throw new Error('no scene id'); return id; })
+    .catch(e => { pcMosaics.delete(date); throw new Error(/fetch|network/i.test(e.message) ? 'Sentinel-2 scene service not reachable, try again' : e.message); });
+  pcMosaics.set(date, { t: Date.now(), promise });
+  return promise;
+}
+const SCL_COLOURS = { 0: [0, 0, 0, 0], 1: [255, 0, 0, 255], 2: [47, 47, 47, 255], 3: [100, 50, 0, 255], 4: [0, 160, 0, 255], 5: [255, 230, 90, 255], 6: [0, 0, 255, 255],
+  7: [128, 128, 128, 255], 8: [192, 192, 192, 255], 9: [255, 255, 255, 255], 10: [100, 200, 255, 255], 11: [255, 150, 255, 255] };
+function sceneQuery(product) {
+  if (product === 'ndvi') return 'expression=(B08-B04)/(B08%2BB04)&asset_as_band=true&rescale=-0.2,0.9&colormap_name=rdylgn&nodata=0&format=png';
+  if (product === 'ndmi') return 'expression=(B08-B11)/(B08%2BB11)&asset_as_band=true&rescale=-0.4,0.6&colormap_name=rdbu&nodata=0&format=png';
+  if (product === 'scl') return `assets=SCL&format=png&colormap=${encodeURIComponent(JSON.stringify(SCL_COLOURS))}`;
+  return 'assets=visual&nodata=0&format=jpg';
 }
 
 let pmtilesReady = null;
@@ -48,7 +76,7 @@ export class LayerManager {
     this.state = new Map();
     for (const l of manifest.layers) {
       this.state.set(l.id, { visible: l.visibleByDefault, opacity: l.style.opacity ?? (l.type === 'geojson' ? 0.6 : 0.75),
-        version: null, data: null, loading: false, error: null, seq: 0 });
+        version: null, data: null, loading: false, error: null, seq: 0, pinned: l.defaultDate || null });
     }
     this.#addAnchors();
   }
@@ -87,6 +115,7 @@ export class LayerManager {
   setSpecies(s) { this.species = s; return this.apply(); }
   setDate(d) { this.date = d || null; return this.apply(); }
   setVisible(id, v) { this.state.get(id).visible = !!v; return this.apply([id]); }
+  setPinned(id, date) { this.state.get(id).pinned = date || null; return this.apply([id]); }
   setOpacity(id, o) { this.state.get(id).opacity = o; const l = this.get(id); if (l) this.#paint(l); }
   setMinScore(v) { this.minScore = Number(v); for (const l of this.manifest.layers) if (this.scored(l)) this.#paint(l); this.onChange('filter'); }
 
@@ -126,7 +155,8 @@ export class LayerManager {
   async #sync(l) {
     const st = this.state.get(l.id);
     if (!this.isActive(l)) { this.#setVisibility(l, false); return; }
-    const v = versionFor(l, this.date);
+    // A date picked on the layer itself wins over the global "Dataset date".
+    const v = (st.pinned && l.versions.find(x => x.date === st.pinned)) || versionFor(l, this.date);
     const seq = ++st.seq;
     if (st.version !== v || !this.map.getSource(`src-${l.id}`)) {
       st.loading = true; st.error = null; this.onChange('loading');
@@ -187,7 +217,13 @@ export class LayerManager {
     for (const id of this.#mapLayerIds(l)) if (m.getLayer(id)) m.removeLayer(id);
     if (m.getSource(srcId)) m.removeSource(srcId);
     const st2 = l.style || {};
-    if (l.type === 'xyz-tiles') {
+    if (l.type === 's2-scene') {
+      const sid = await registerScene(v.date);
+      if (seq !== st.seq) return;
+      m.addSource(srcId, { type: 'raster', tiles: [`${PC}/mosaic/${sid}/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&${sceneQuery(l.product)}`],
+        tileSize: 256, minzoom: st2.minzoom ?? 8, maxzoom: st2.maxzoom ?? 15, bounds: [5.8, 47.2, 15.1, 55.1], attribution: l.attribution });
+      this.#addRasterLayer(l, srcId);
+    } else if (l.type === 'xyz-tiles') {
       m.addSource(srcId, { type: 'raster', tiles: [v.href], tileSize: st2.tileSize || 256, minzoom: st2.minzoom ?? 0, maxzoom: st2.maxzoom ?? 18,
         attribution: l.attribution, ...(v.bounds ? { bounds: v.bounds } : {}) });
       this.#addRasterLayer(l, srcId);

@@ -1,12 +1,12 @@
 /* app.js — SAIIL Wildlife Habitat Explorer bootstrap.
    Wires together: manifest (data/layers.json) → LayerManager → MapLibre globe → UI panels.
    Static site: no backend, no tracking, no API keys. */
-import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261028a';
-import { loadManifest, allDates } from './js/manifest.js?v=20261028a';
-import { LayerManager } from './js/layers.js?v=20261028a';
-import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261028a';
-import { initSearch, copernicusUrl } from './js/search.js?v=20261028a';
-import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261028a';
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261028b';
+import { loadManifest, allDates } from './js/manifest.js?v=20261028b';
+import { LayerManager } from './js/layers.js?v=20261028b';
+import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261028b';
+import { initSearch, copernicusUrl } from './js/search.js?v=20261028b';
+import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261028b';
 
 const params = new URLSearchParams(location.search);
 const state = { map: null, mgr: null, manifest: null, spinner: null, projection: 'globe', basemap: 'satellite', popup: null, selected: null };
@@ -112,7 +112,7 @@ function addLabelLayers() {
   const { map } = state;
   for (const [id, url] of Object.entries(LABEL_SOURCES)) {
     if (!map.getSource(id)) map.addSource(id, { type: 'raster', tiles: [url], tileSize: 256, maxzoom: 19, attribution: 'Labels and roads © Esri, HERE, Garmin, OpenStreetMap contributors' });
-    if (!map.getLayer(id)) map.addLayer({ id, type: 'raster', source: id, minzoom: id === 'ref-roads' ? 9 : 0, paint: { 'raster-fade-duration': 150 } });
+    if (!map.getLayer(id)) map.addLayer({ id, type: 'raster', source: id, minzoom: id === 'ref-roads' ? 11 : 0, paint: { 'raster-fade-duration': 300, 'raster-opacity': id === 'ref-roads' ? 0.75 : 1 } });
   }
   syncLabels();
 }
@@ -211,6 +211,7 @@ function buildPanel() {
   buildLayerPanel($('layer-panel'), state.mgr, {
     onToggle: (id, on) => { state.mgr.setVisible(id, on); if (!on && state.selected?.layer.id === id) clearSelection(); },
     onOpacity: (id, o) => state.mgr.setOpacity(id, o),
+    onPin: (id, date) => { state.mgr.setPinned(id, date); },
   });
 }
 

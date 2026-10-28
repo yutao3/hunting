@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / 'data' / 'layers.json'
-TYPES = {'geojson', 'raster-image', 'xyz-tiles', 'pmtiles'}
+TYPES = {'geojson', 'raster-image', 'xyz-tiles', 'pmtiles', 's2-scene'}
 errors, warnings = [], []
 
 
@@ -61,7 +61,7 @@ def main():
             if not l.get('realtime') and (not date or len(str(date)) != 10): warnings.append(f'{where}: date should be ISO YYYY-MM-DD (got {date!r})')
             if l.get('type') == 'raster-image' and not ok_bounds(v.get('bounds') or l.get('bounds')):
                 errors.append(f'{where}: raster-image needs bounds [west, south, east, north] in EPSG:4326')
-            if url.startswith(('http://', 'https://')) or '{z}' in url: continue
+            if url.startswith(('http://', 'https://', 'pc://')) or '{z}' in url: continue
             path = (MANIFEST.parent / url).resolve()
             if not path.exists(): errors.append(f'{where}: file not found: data/{url}'); continue
             if l.get('type') == 'geojson': check_geojson(path, l, where)

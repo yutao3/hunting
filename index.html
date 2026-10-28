@@ -10,9 +10,9 @@
   <title>Wildlife Habitat Explorer · SAIIL</title>
   <!-- MapLibre GL JS 5.24.0 (pinned). app.js retries from jsDelivr if unpkg is unreachable. -->
   <link id="maplibre-css" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link href="./assets/styles.css?v=20261028a" rel="stylesheet">
+  <link href="./assets/styles.css?v=20261028b" rel="stylesheet">
   <script defer src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-  <script type="module" src="./assets/app.js?v=20261028a"></script>
+  <script type="module" src="./assets/app.js?v=20261028b"></script>
 </head>
 <body>
 <div class="app" id="app" data-tab="map">
@@ -118,7 +118,7 @@
 
       <div class="divider"></div>
       <div class="metadata-card"><div class="control-label"><label>Product provenance</label></div><dl><dt>Layer</dt><dd id="meta-layer">—</dd><dt>Dataset date</dt><dd id="meta-date">—</dd><dt>Status</dt><dd id="meta-status">—</dd><dt>Resolution</dt><dd id="meta-resolution">—</dd><dt>Coverage</dt><dd id="meta-coverage">—</dd><dt>Source</dt><dd id="meta-source">—</dd></dl><p class="control-note" id="meta-description"></p></div>
-      <div class="info-note"><span>ⓘ</span><p><b>Real data:</b> Sentinel-2 (EOX), NASA VIIRS &amp; MODIS NDVI, DLR crop types &amp; forest structure, Copernicus tree cover, protected areas (WDPA), live weather (Open-Meteo). <b>Demo only:</b> the habitat score model. Not a hunting recommendation; always follow local law.</p></div>
+      <div class="info-note"><span>ⓘ</span><p><b>Real data:</b> Sentinel-2 single-day scenes (Planetary Computer) and yearly mosaics (EOX), NASA VIIRS &amp; MODIS NDVI, DLR crop types &amp; forest structure, Copernicus tree cover, protected areas (WDPA), live weather (Open-Meteo). <b>Demo only:</b> the habitat score model. Not a hunting recommendation; always follow local law.</p></div>
       <p class="footer-links">© 2026 Surrey AI Imaging Ltd · <a href="./docs/data-guide.html">Data guide</a> · <a href="./data/layers.json" target="_blank" rel="noopener">layers.json</a></p>
     </aside>
   </main>
@@ -154,9 +154,10 @@
   </dl>
   <h3>What each layer means</h3>
   <dl class="help-defs">
-    <dt>Sentinel-2 true colour</dt><dd>Real 10 m satellite mosaic (cloud-free, one per year). The base for SAIIL analytics.</dd>
-    <dt>Vegetation greenness (NDVI)</dt><dd>How green and productive vegetation is now (NASA MODIS, 8-day). Greener means more food and cover.</dd>
-    <dt>Yesterday's satellite view</dt><dd>NASA VIIRS daily image, showing current cloud and snow.</dd>
+    <dt>Sentinel-2 scenes by date (true colour, NDVI, cloud mask)</dt><dd>The real Sentinel-2 picture of ONE day, 10 m, exactly like the Copernicus Browser. Pick the day with the "Date" box in the layer row. 5 Oct is clear; 22 Oct shows clouds (turn on the cloud mask to see them classified). Zoom in past level 8 to see it.</dd>
+    <dt>Sentinel-2 cloud-free yearly mosaic</dt><dd>One clean picture per year (2016–2024, EOX), with all clouds removed by combining many dates. Good as a background, but it is not a single day.</dd>
+    <dt>Vegetation greenness (NDVI, NASA)</dt><dd>Coarse 250 m greenness averaged over 8 days (NASA MODIS). Good for the big picture; for field-level detail use the Sentinel-2 NDVI layer.</dd>
+    <dt>Daily satellite view (NASA VIIRS)</dt><dd>A 375 m picture of Europe from about 2 days ago, showing current cloud and snow. Very blurry when zoomed in; black means no image for that strip yet.</dd>
     <dt>Crop types (DLR)</dt><dd>Which crop grows in each field, 2017 to 2024. Maize and cereals attract wild boar.</dd>
     <dt>Canopy cover and height (DLR)</dt><dd>How closed and how tall the forest is: shelter, shade, young vs mature forest.</dd>
     <dt>Clearings &amp; canopy loss (DLR)</dt><dd>Where trees were lost 2018 to 2021. Clearings regrow fresh food that deer seek.</dd>

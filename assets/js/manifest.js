@@ -3,7 +3,7 @@
    Relative URLs resolve against the manifest file, so the site works on any sub-path. */
 
 export const MANIFEST_URL = new URL('../../data/layers.json', import.meta.url);
-export const SUPPORTED_TYPES = ['geojson', 'raster-image', 'xyz-tiles', 'pmtiles'];
+export const SUPPORTED_TYPES = ['geojson', 'raster-image', 'xyz-tiles', 'pmtiles', 's2-scene'];
 
 const isBounds = (b) => Array.isArray(b) && b.length === 4 && b.every(Number.isFinite) &&
   b[0] < b[2] && b[1] < b[3] && b[0] >= -180 && b[2] <= 180 && b[1] >= -90 && b[3] <= 90;

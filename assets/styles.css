@@ -325,3 +325,8 @@ i.chip { width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; verti
 @media (max-width: 760px) { .map-search { width: 100%; } .map-top-left { width: 100%; } }
 .maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib { max-width: calc(100vw - var(--panel-w) - var(--panel-w-r) - 90px); }
 @media (max-width: 760px) { .maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib { max-width: calc(100vw - 20px); } }
+.layer-date { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font-size: 11px; font-weight: 700; color: #4f6a5d; }
+.select-sm { height: 30px; font-size: 11px; padding: 0 6px; }
+.legend-classes { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 10.5px; color: #4f6a5d; }
+.legend-classes span { display: inline-flex; align-items: center; gap: 4px; }
+.legend-classes i { width: 11px; height: 11px; border-radius: 3px; border: 1px solid rgba(0,0,0,.25); display: inline-block; }

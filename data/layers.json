@@ -28,6 +28,297 @@
   ],
   "layers": [
     {
+      "id": "s2-scene-truecolor",
+      "title": "True colour (one day)",
+      "type": "s2-scene",
+      "product": "truecolor",
+      "group": "Sentinel-2 scenes by date (real, 10 m)",
+      "visibleByDefault": false,
+      "defaultDate": "2026-10-05",
+      "description": "The actual Sentinel-2 picture of one day, as in the Copernicus Browser (bands B4-B3-B2, 10 m). Pick the day with \"Date\". 22 Oct shows clouds. Zoom in past level 8.",
+      "source": "Copernicus Sentinel-2 L2A via Microsoft Planetary Computer",
+      "status": "real",
+      "resolution": "10 m, single date",
+      "attribution": "Contains modified Copernicus Sentinel data 2026 · rendered by Microsoft Planetary Computer",
+      "style": {
+        "opacity": 1,
+        "covers": true,
+        "color": "#4a7b5c",
+        "legendLabel": "True colour (RGB)"
+      },
+      "versions": [
+        {
+          "date": "2026-10-22",
+          "url": "pc://sentinel-2-l2a",
+          "label": "cloudy (cloud demo)"
+        },
+        {
+          "date": "2026-10-05",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-25",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-15",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-10",
+          "url": "pc://sentinel-2-l2a",
+          "label": "mostly clear"
+        },
+        {
+          "date": "2026-08-13",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-07-24",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-07-04",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-06-27",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-05-23",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        }
+      ]
+    },
+    {
+      "id": "s2-scene-ndvi",
+      "title": "NDVI greenness (one day, 10 m)",
+      "type": "s2-scene",
+      "product": "ndvi",
+      "group": "Sentinel-2 scenes by date (real, 10 m)",
+      "visibleByDefault": false,
+      "defaultDate": "2026-10-05",
+      "description": "NDVI = (B8 - B4) / (B8 + B4) calculated live from that day's Sentinel-2 image. Green = dense healthy vegetation, yellow = sparse, red = bare ground, town or water. Clouds show as low values.",
+      "source": "Copernicus Sentinel-2 L2A via Microsoft Planetary Computer",
+      "status": "real",
+      "resolution": "10 m, single date",
+      "attribution": "Contains modified Copernicus Sentinel data 2026 · rendered by Microsoft Planetary Computer",
+      "style": {
+        "opacity": 0.85,
+        "min": -0.2,
+        "max": 0.9,
+        "ramp": [
+          [
+            -0.2,
+            "#a50026"
+          ],
+          [
+            0.15,
+            "#f46d43"
+          ],
+          [
+            0.35,
+            "#fee08b"
+          ],
+          [
+            0.55,
+            "#a6d96a"
+          ],
+          [
+            0.9,
+            "#006837"
+          ]
+        ],
+        "legendLabel": "NDVI"
+      },
+      "versions": [
+        {
+          "date": "2026-10-22",
+          "url": "pc://sentinel-2-l2a",
+          "label": "cloudy (cloud demo)"
+        },
+        {
+          "date": "2026-10-05",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-25",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-15",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-10",
+          "url": "pc://sentinel-2-l2a",
+          "label": "mostly clear"
+        },
+        {
+          "date": "2026-08-13",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-07-24",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-07-04",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-06-27",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-05-23",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        }
+      ]
+    },
+    {
+      "id": "s2-scene-scl",
+      "title": "Cloud mask / scene classification (one day)",
+      "type": "s2-scene",
+      "product": "scl",
+      "group": "Sentinel-2 scenes by date (real, 10 m)",
+      "visibleByDefault": false,
+      "defaultDate": "2026-10-22",
+      "description": "The SCL layer that comes with each Sentinel-2 image: white/light grey = cloud, brown = cloud shadow, green = vegetation, yellow = not vegetated, blue = water. Same colours as the Copernicus Browser.",
+      "source": "Copernicus Sentinel-2 L2A (ESA Sen2Cor) via Microsoft Planetary Computer",
+      "status": "real",
+      "resolution": "20 m, single date",
+      "attribution": "Contains modified Copernicus Sentinel data 2026 · rendered by Microsoft Planetary Computer",
+      "style": {
+        "opacity": 0.85,
+        "covers": true,
+        "color": "#c0c0c0",
+        "legendLabel": "Scene classes",
+        "legendItems": [
+          [
+            "#ffffff",
+            "Cloud (high)"
+          ],
+          [
+            "#c0c0c0",
+            "Cloud (medium)"
+          ],
+          [
+            "#64c8ff",
+            "Thin cirrus"
+          ],
+          [
+            "#2f2f2f",
+            "Dark / shadow"
+          ],
+          [
+            "#643200",
+            "Cloud shadow"
+          ],
+          [
+            "#00a000",
+            "Vegetation"
+          ],
+          [
+            "#ffe65a",
+            "Not vegetated"
+          ],
+          [
+            "#0000ff",
+            "Water"
+          ],
+          [
+            "#ff96ff",
+            "Snow / ice"
+          ]
+        ]
+      },
+      "versions": [
+        {
+          "date": "2026-10-22",
+          "url": "pc://sentinel-2-l2a",
+          "label": "cloudy (cloud demo)"
+        },
+        {
+          "date": "2026-10-05",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-27",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-25",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-15",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-09-10",
+          "url": "pc://sentinel-2-l2a",
+          "label": "mostly clear"
+        },
+        {
+          "date": "2026-08-13",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-07-24",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-07-04",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-06-27",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        },
+        {
+          "date": "2026-05-23",
+          "url": "pc://sentinel-2-l2a",
+          "label": "clear"
+        }
+      ]
+    },
+    {
       "id": "sentinel2-cloudless",
       "title": "Sentinel-2 true colour (annual cloud-free mosaic)",
       "type": "xyz-tiles",
@@ -91,14 +382,14 @@
     },
     {
       "id": "viirs-daily",
-      "title": "Yesterday's satellite view (NASA VIIRS)",
+      "title": "Daily satellite view, ~2 days old (NASA VIIRS)",
       "type": "xyz-tiles",
       "group": "Satellite imagery (real)",
       "visibleByDefault": false,
       "realtime": true,
-      "lagDays": 1,
+      "lagDays": 2,
       "url": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/{date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg",
-      "description": "Near-real-time daily true-colour image from the Suomi-NPP satellite (375 m). Shows current cloud and snow cover.",
+      "description": "Near-real-time daily true-colour image from the Suomi-NPP satellite (375 m, about 2 days old). Shows current cloud and snow cover; black means no image yet.",
       "source": "NASA GIBS / Worldview (VIIRS SNPP)",
       "status": "real",
       "resolution": "375 m (daily)",
@@ -113,7 +404,7 @@
     },
     {
       "id": "ndvi-modis",
-      "title": "Vegetation greenness NDVI (latest 8-day)",
+      "title": "Greenness NDVI, coarse 250 m (NASA MODIS 8-day)",
       "type": "xyz-tiles",
       "group": "Habitat indicators: Europe (real)",
       "visibleByDefault": true,

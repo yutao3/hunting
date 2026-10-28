@@ -20,7 +20,7 @@ export const formatDate = (d) => {
   const dt = new Date(`${d}T12:00:00Z`);
   return Number.isNaN(dt.valueOf()) ? d : dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 };
-const TYPE_LABEL = { 'geojson': 'Vector', 'raster-image': 'Raster image', 'xyz-tiles': 'XYZ tiles', 'pmtiles': 'PMTiles' };
+const TYPE_LABEL = { 'geojson': 'Vector', 'raster-image': 'Raster image', 'xyz-tiles': 'XYZ tiles', 'pmtiles': 'PMTiles', 's2-scene': 'Sentinel-2 scene' };
 
 /* ---------- colour helpers ---------- */
 const hex = (h) => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
@@ -54,6 +54,10 @@ export function legendFor(layer) {
     return el('details', { class: 'legend legend-image' }, el('summary', {}, `Legend: ${s.legendLabel || layer.title}`),
       el('img', { src: s.legendImage, alt: `Legend for ${layer.title}`, loading: 'lazy' }));
   }
+  // Class legend (e.g. Sentinel-2 scene classification): [[colour, label], ...]
+  if (Array.isArray(s.legendItems)) {
+    return el('div', { class: 'legend legend-classes' }, ...s.legendItems.map(([c, t]) => el('span', {}, el('i', { style: `background:${c}` }), t)));
+  }
   if (Array.isArray(s.ramp) && s.ramp.length > 1) {
     const lo = s.min ?? s.ramp[0][0], hi = s.max ?? s.ramp[s.ramp.length - 1][0];
     const mid = Math.round(((lo + hi) / 2) * 100) / 100;
@@ -66,7 +70,7 @@ export function legendFor(layer) {
 }
 
 /* ---------- layer panel ---------- */
-export function buildLayerPanel(container, mgr, { onToggle, onOpacity }) {
+export function buildLayerPanel(container, mgr, { onToggle, onOpacity, onPin }) {
   container.replaceChildren();
   const layers = mgr.layersForSpecies();
   if (!layers.length) { container.append(el('p', { class: 'control-note' }, 'No layers in data/layers.json for this species.')); return; }
@@ -94,6 +98,10 @@ export function buildLayerPanel(container, mgr, { onToggle, onOpacity }) {
           el('div', { class: 'control-label small' }, el('label', { for: opId }, 'Opacity'), el('span', { class: 'op-val' }, `${pct}%`)),
           el('input', { type: 'range', id: opId, min: 5, max: 100, step: 5, value: pct, 'aria-label': `${l.title} opacity`,
             oninput: (e) => { row.querySelector('.op-val').textContent = `${e.target.value}%`; onOpacity(l.id, e.target.value / 100); } }),
+          l.versions.length > 1 ? el('div', { class: 'layer-date' }, el('label', { for: `date-${l.id}` }, 'Date'),
+            el('select', { id: `date-${l.id}`, class: 'select select-sm', onchange: (e) => onPin?.(l.id, e.target.value) },
+              el('option', { value: '', selected: !st.pinned }, 'Follow "Dataset date"'),
+              ...l.versions.map(v => el('option', { value: v.date, selected: st.pinned === v.date }, `${formatDate(v.date)}${v.label ? ` · ${v.label}` : ''}`)))) : null,
           legendFor(l),
           l.description ? el('p', { class: 'control-note' }, l.description) : null,
           el('p', { class: 'layer-status', role: 'status' })));
@@ -108,8 +116,9 @@ export function refreshLayerPanel(container, mgr, selectedDate) {
     const l = mgr.get(row.dataset.layer); if (!l) continue;
     const st = mgr.status(l.id);
     row.classList.toggle('on', st.visible);
-    const v = st.version || l.versions.find(x => !selectedDate || x.date <= selectedDate) || l.versions[l.versions.length - 1];
-    const nearest = selectedDate && v.date !== selectedDate ? ' (nearest)' : '';
+    const pinned = st.pinned && l.versions.find(x => x.date === st.pinned);
+    const v = pinned || st.version || l.versions.find(x => !selectedDate || x.date <= selectedDate) || l.versions[l.versions.length - 1];
+    const nearest = pinned ? ' (picked)' : selectedDate && v.date !== selectedDate ? ' (nearest)' : '';
     row.querySelector('.layer-meta').textContent = l.realtime
       ? `${TYPE_LABEL[l.type] || l.type} · LIVE · ${formatDate(v.date)}`
       : `${TYPE_LABEL[l.type] || l.type} · ${formatDate(v.date)}${nearest}${l.versions.length > 1 ? ` · ${l.versions.length} dates` : ''}`;

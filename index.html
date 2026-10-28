@@ -10,9 +10,9 @@
   <title>Wildlife Habitat Explorer · SAIIL</title>
   <!-- MapLibre GL JS 5.24.0 (pinned). app.js retries from jsDelivr if unpkg is unreachable. -->
   <link id="maplibre-css" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
-  <link href="./assets/styles.css?v=20261028b" rel="stylesheet">
+  <link href="./assets/styles.css?v=20261028c" rel="stylesheet">
   <script defer src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-  <script type="module" src="./assets/app.js?v=20261028b"></script>
+  <script type="module" src="./assets/app.js?v=20261028c"></script>
 </head>
 <body>
 <div class="app" id="app" data-tab="map">
@@ -61,7 +61,7 @@
 
       <div class="map-fly"><button type="button" id="fly-btn" class="fly-btn">✈ Fly to Black Forest pilot</button><button type="button" id="globe-btn" class="fly-btn ghost" hidden>◍ Back to globe</button></div>
       <div class="map-bottom-left"><span class="map-coordinate" id="coordinates">Move pointer to read coordinates</span></div>
-      <div class="map-bottom-right"><a class="map-btn" id="copernicus-link" href="https://browser.dataspace.copernicus.eu/" target="_blank" rel="noopener" title="Open this exact place in the Copernicus Browser (Sentinel-2) to compare">Open in Copernicus ↗</a><button type="button" id="copy-view" title="Copy the map centre coordinates">⊕ Copy view</button></div>
+      <div class="map-bottom-right"><button type="button" id="copy-view" title="Copy the map centre coordinates">⊕ Copy view</button></div>
       <div class="map-alert" id="map-alert" hidden></div>
 
       <button type="button" class="panel-tab panel-tab-left" id="open-left" aria-controls="panel-layers" hidden>☰ Layers</button>
@@ -141,7 +141,7 @@
     <li><b>Switch layers on in "Layers &amp; filters"</b> (left). Each layer has a toggle, an opacity slider and a legend. Layers marked <span class="real-tag">REAL</span> are satellite or official data; <span class="syn-tag">DEMO</span> layers are fabricated placeholders.</li>
     <li><b>Read the live conditions</b> (right). Wind, temperature, rain, sunrise/sunset, legal daylight window and moon phase are for the map centre. <b>Click any spot</b> to get conditions there. The green advice box tells you where to stand so your scent drifts away from game.</li>
     <li><b>Preview the habitat score</b> with <b>▶ Preview habitat score model</b>. Small patches are coloured by score (yellow = low, dark green = high); zoomed out they show as dots. Use the slider to hide weak patches and click one: <b>"Why this score"</b> shows each indicator's value, its weight and the points it adds.</li>
-    <li><b>Search a place</b> (top left of the map): type a town, village, mountain or coordinates like "48.28, 8.17" and press Enter. <b>Labels</b> shows place names and roads on the satellite map, and <b>Open in Copernicus</b> opens the same spot in the Copernicus Browser to compare with raw Sentinel-2.</li>
+    <li><b>Search a place</b> (top left of the map): type a town, village, mountain or coordinates like "48.28, 8.17" and press Enter. <b>Labels</b> shows place names and roads on the satellite map.</li>
     <li><b>Go back in time</b> with "Dataset date", for example Sentinel-2 imagery from 2016 to 2024 or crop maps from 2017 to 2024.</li>
     <li><b>Load your own Revier</b> (left panel) as a GeoJSON file to outline your hunting ground and get conditions there. It never leaves your browser.</li>
     <li><b>Export</b> the visible polygons as GeoJSON, or <b>Copy view</b> to share coordinates.</li>

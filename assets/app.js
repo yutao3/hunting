@@ -1,12 +1,12 @@
 /* app.js — SAIIL Wildlife Habitat Explorer bootstrap.
    Wires together: manifest (data/layers.json) → LayerManager → MapLibre globe → UI panels.
    Static site: no backend, no tracking, no API keys. */
-import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261028b';
-import { loadManifest, allDates } from './js/manifest.js?v=20261028b';
-import { LayerManager } from './js/layers.js?v=20261028b';
-import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261028b';
-import { initSearch, copernicusUrl } from './js/search.js?v=20261028b';
-import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261028b';
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261028c';
+import { loadManifest, allDates } from './js/manifest.js?v=20261028c';
+import { LayerManager } from './js/layers.js?v=20261028c';
+import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261028c';
+import { initSearch, copernicusUrl } from './js/search.js?v=20261028c';
+import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261028c';
 
 const params = new URLSearchParams(location.search);
 const state = { map: null, mgr: null, manifest: null, spinner: null, projection: 'globe', basemap: 'satellite', popup: null, selected: null };
@@ -138,7 +138,7 @@ function goToPlace(p) {
 }
 function updateCopernicusLink() {
   const { map } = state; if (!map) return;
-  const c = map.getCenter(); $('copernicus-link').href = copernicusUrl(c.lat, c.lng, map.getZoom());
+  const link = $('copernicus-link'); if (!link) return; const c = map.getCenter(); link.href = copernicusUrl(c.lat, c.lng, map.getZoom());
 }
 
 /* ---------- views ---------- */

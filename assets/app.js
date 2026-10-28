@@ -1,11 +1,12 @@
 /* app.js — SAIIL Wildlife Habitat Explorer bootstrap.
    Wires together: manifest (data/layers.json) → LayerManager → MapLibre globe → UI panels.
    Static site: no backend, no tracking, no API keys. */
-import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261021a';
-import { loadManifest, allDates } from './js/manifest.js?v=20261021a';
-import { LayerManager } from './js/layers.js?v=20261021a';
-import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261021a';
-import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261021a';
+import { ensureMapLibre, baseStyle, setBasemap, drawStarfield, applyProjection, createSpinner, flyToBounds, GLOBE_VIEW, globeZoomFor } from './js/globe.js?v=20261028a';
+import { loadManifest, allDates } from './js/manifest.js?v=20261028a';
+import { LayerManager } from './js/layers.js?v=20261028a';
+import { $, setText, el, formatDate, buildLayerPanel, refreshLayerPanel, renderHistogram, renderFeature, clearFeature, rampColor, areaHa } from './js/ui.js?v=20261028a';
+import { initSearch, copernicusUrl } from './js/search.js?v=20261028a';
+import { fetchConditions, renderConditions, compass, arrow } from './js/conditions.js?v=20261028a';
 
 const params = new URLSearchParams(location.search);
 const state = { map: null, mgr: null, manifest: null, spinner: null, projection: 'globe', basemap: 'satellite', popup: null, selected: null };
@@ -38,7 +39,7 @@ async function initialiseMap() {
     map.getCanvas().style.cursor = ids.length && map.queryRenderedFeatures(e.point, { layers: ids }).length ? 'pointer' : '';
   });
   map.on('click', onMapClick);
-  map.on('moveend', () => scheduleConditions());
+  map.on('moveend', () => { scheduleConditions(); updateCopernicusLink(); });
   // Wait for the style only (not every basemap tile) so panels and layers appear fast on slow links.
   await new Promise((resolve) => (map.isStyleLoaded() ? resolve() : map.once('style.load', () => setTimeout(resolve, 0))));
   state.spinner = createSpinner(map);
@@ -100,6 +101,46 @@ function scheduleConditions(immediate) {
   }, immediate === true ? 0 : 900);
 }
 
+/* ---------- place names, search, Copernicus link ---------- */
+const LABEL_SOURCES = {
+  'ref-places': 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+  'ref-roads': 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+};
+state.labels = true;
+/** Place names + roads drawn ON TOP of every data layer (added after the layer manager's own layers). */
+function addLabelLayers() {
+  const { map } = state;
+  for (const [id, url] of Object.entries(LABEL_SOURCES)) {
+    if (!map.getSource(id)) map.addSource(id, { type: 'raster', tiles: [url], tileSize: 256, maxzoom: 19, attribution: 'Labels and roads © Esri, HERE, Garmin, OpenStreetMap contributors' });
+    if (!map.getLayer(id)) map.addLayer({ id, type: 'raster', source: id, minzoom: id === 'ref-roads' ? 9 : 0, paint: { 'raster-fade-duration': 150 } });
+  }
+  syncLabels();
+}
+function syncLabels() {
+  const { map } = state; if (!map) return;
+  // The "Map" base map already has its own names, so the overlay is only used on satellite.
+  const on = state.labels && state.basemap === 'satellite';
+  for (const id of Object.keys(LABEL_SOURCES)) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none');
+  const b = $('labels-btn'); b.classList.toggle('active', state.labels); b.setAttribute('aria-pressed', String(state.labels));
+}
+let searchMarker = null;
+function goToPlace(p) {
+  const { map } = state; if (!map) return;
+  state.spinner?.stop();
+  searchMarker?.remove();
+  searchMarker = new maplibregl.Marker({ color: '#ff7a00' }).setLngLat([p.lng, p.lat]).setPopup(new maplibregl.Popup({ offset: 24 }).setText(p.name)).addTo(map);
+  const b = p.bbox;
+  if (b && b[2] - b[0] > 0.002 && b[2] - b[0] < 3) map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: panelPadding(), maxZoom: 14, duration: 2200 });
+  else map.flyTo({ center: [p.lng, p.lat], zoom: 13, duration: 2200, essential: true });
+  $('fly-btn').hidden = true; $('globe-btn').hidden = false;
+  condPinned = { lat: p.lat, lng: p.lng }; updateConditions(condPinned, /^-?\d/.test(p.name) ? 'Searched point' : p.name);
+  setTimeout(() => { condPinned = null; }, 30000);
+}
+function updateCopernicusLink() {
+  const { map } = state; if (!map) return;
+  const c = map.getCenter(); $('copernicus-link').href = copernicusUrl(c.lat, c.lng, map.getZoom());
+}
+
 /* ---------- views ---------- */
 const regionBounds = () => state.manifest?.region.bounds || [7.55, 47.67, 8.85, 48.56];
 const isPhone = () => window.matchMedia('(max-width: 760px)').matches;
@@ -130,6 +171,7 @@ function updateProjectionButtons() {
 }
 function updateBasemap(which, fromUser) {
   state.basemap = which; if (state.map) setBasemap(state.map, which);
+  syncLabels();
   const covering = state.mgr?.layersForSpecies().filter(l => state.mgr.isActive(l) && l.style?.covers) || [];
   if (fromUser && covering.length) warn(`"${covering[0].title}" is switched on and covers the base map. Switch it off in Layers to see the ${which === 'streets' ? 'Map' : 'Satellite'} base map.`);
   document.querySelectorAll('[data-basemap]').forEach(b => { const a = b.dataset.basemap === which; b.classList.toggle('active', a); b.setAttribute('aria-pressed', String(a)); });
@@ -327,6 +369,9 @@ function setTab(tab) {
 /* ---------- static controls ---------- */
 function attachControls() {
   $('demo-toggle').addEventListener('click', toggleDemo);
+  $('labels-btn').addEventListener('click', () => { state.labels = !state.labels; syncLabels(); });
+  initSearch({ form: $('search-form'), input: $('search-input'), list: $('search-results'), status: $('search-status'),
+    getNear: () => (state.map && state.map.getZoom() > 5 ? state.map.getCenter() : null), onPick: goToPlace });
   $('revier-file').addEventListener('change', (e) => { const f = e.target.files?.[0]; if (f) loadRevierFile(f); });
   $('revier-zoom').addEventListener('click', () => { const b = state.revier?.bounds; if (b && state.map) { state.spinner?.stop(); state.map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: panelPadding(), maxZoom: 15, duration: 1800 }); } });
   $('revier-clear').addEventListener('click', clearRevier);
@@ -374,6 +419,7 @@ async function start() {
   $('score-threshold').value = manifest.defaults.minScore; setText('threshold-label', manifest.defaults.minScore);
   state.mgr = new LayerManager(map, manifest, { onChange: updateAnalytics, onError: (m) => warn(`Layer failed: ${m}`) });
   renderSpecies(); renderDates(); buildPanel(); clearFeature();
+  addLabelLayers(); updateCopernicusLink();
   await state.mgr.apply();
   loading(false);
   restoreRevier();

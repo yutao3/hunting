@@ -304,3 +304,24 @@ i.chip { width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; verti
 .revier-actions .action { margin-top: 6px; padding: 8px 4px; }
 .legal-note { font-size: 10.5px; line-height: 1.5; color: #7a4b16; margin: 10px 0 0; }
 .tag-layer { background: #eef3fb; color: #2d5487; margin-left: auto; margin-right: 6px; }
+
+/* ---------- place search + labels + Copernicus link ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+.map-search { position: relative; display: flex; width: min(320px, 100%); background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #0004; }
+.map-search input { flex: 1; min-width: 0; border: 0; background: transparent; padding: 10px 12px; font-size: 13px; color: #17302a; border-radius: 10px 0 0 10px; }
+.map-search input:focus { outline: none; }
+.map-search:focus-within { outline: 3px solid #80bdf4; outline-offset: 2px; }
+.map-search button { border: 0; background: #16785b; color: #fff; font-size: 17px; font-weight: 800; padding: 0 14px; border-radius: 0 10px 10px 0; }
+.search-results { position: absolute; top: calc(100% + 6px); left: 0; right: 0; margin: 0; padding: 4px; list-style: none; background: #fff; border-radius: 10px; box-shadow: 0 8px 26px #0005; z-index: 20; max-height: 300px; overflow-y: auto; }
+.search-results[hidden] { display: none; }
+.search-results li { padding: 8px 10px; border-radius: 7px; cursor: pointer; display: grid; gap: 2px; }
+.search-results li:hover, .search-results li:focus { background: #eef6f1; outline: none; }
+.search-results b { font-size: 12.5px; color: #17302a; }
+.search-results span { font-size: 10.5px; color: #6f8379; }
+.search-status { position: absolute; top: calc(100% + 4px); left: 4px; margin: 0; font-size: 10.5px; color: #fff; text-shadow: 0 1px 3px #000; white-space: nowrap; }
+.search-status:empty { display: none; }
+.map-btn { pointer-events: auto; display: inline-block; margin-right: 6px; background: #0d2342e6; color: #fff; text-decoration: none; box-shadow: 0 1px 7px #0003; border-radius: 7px; padding: 8px 10px; font-size: 10px; font-weight: 750; }
+.map-btn:hover { background: #163a6be6; }
+@media (max-width: 760px) { .map-search { width: 100%; } .map-top-left { width: 100%; } }
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib { max-width: calc(100vw - var(--panel-w) - var(--panel-w-r) - 90px); }
+@media (max-width: 760px) { .maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib { max-width: calc(100vw - 20px); } }
